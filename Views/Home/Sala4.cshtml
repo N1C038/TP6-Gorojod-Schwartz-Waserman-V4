@@ -1,0 +1,694 @@
+@{
+	ViewData["Title"] = "Sala 4 - Radiance";
+}
+
+<div class="sala4-scene">
+	<div class="text-center mb-3">
+		<h2>Sala 4: Radiance, dios del tormento</h2>
+	</div>
+
+	<p class="sala4-intro">
+		Llegaste al final del reino. Radiance emerge para atormentar todo lo que queda. Sobreviví a sus cuatro ataques:
+		espadas verticales, espadas horizontales con hueco, lasers circulares y espadas curvas en espiral.
+	</p>
+
+	<div class="sala4-hud">
+		<div class="sala4-bar-wrap">
+			<span>Tu vida</span>
+			<div class="sala4-bar">
+				<div id="playerHpFill" class="sala4-fill"></div>
+			</div>
+		</div>
+		<div id="sala4Wave" class="sala4-wave">Ataque 1/4</div>
+	</div>
+
+	<div class="sala4-controls">Mover: A/D o flechas &nbsp;|&nbsp; Saltar: Espacio o W/↑</div>
+
+	<div class="sala4-arena-wrap">
+		<canvas id="radianceArena" width="960" height="540" aria-label="Combate final contra Radiance"></canvas>
+		<div id="sala4Overlay" class="sala4-overlay">
+			<h3>Desafío Final</h3>
+			<p>Radiance descendió sobre tu reino. ResistÍ sus cuatro patrones para vencer.</p>
+			<button id="startSala4" class="btn btn-danger">Comenzar combate</button>
+		</div>
+	</div>
+
+	<div id="sala4Status" class="sala4-status">Esperando el inicio del combate...</div>
+
+	<div id="sala4Victory" class="sala4-victory" style="display:none;">
+		<p><strong>¡Radiance cayó!</strong> El reino vuelve a respirar en paz.</p>
+		<a href="@Url.Action("Historia", "Home")" class="btn btn-primary">Volver a la historia</a>
+	</div>
+</div>
+
+<script>
+	(function () {
+		const canvas = document.getElementById('radianceArena');
+		const ctx = canvas.getContext('2d');
+		const overlay = document.getElementById('sala4Overlay');
+		const startBtn = document.getElementById('startSala4');
+		const statusEl = document.getElementById('sala4Status');
+		const hpFill = document.getElementById('playerHpFill');
+		const waveEl = document.getElementById('sala4Wave');
+		const victoryEl = document.getElementById('sala4Victory');
+
+		const arena = {
+			width: canvas.width,
+			height: canvas.height,
+			floor: canvas.height - 68
+		};
+
+		const player = {
+			x: arena.width * 0.5,
+			y: arena.floor,
+			w: 34,
+			h: 56,
+			vx: 0,
+			vy: 0,
+			speed: 9.5,
+			jump: -16,
+			onGround: true,
+			hp: 100,
+			iFrames: 0
+		};
+
+		const radiance = {
+			x: arena.width * 0.5,
+			y: 220,
+			r: 70
+		};
+
+		const gravity = 0.62;			
+		const attacks = [
+			{ key: 'vertical', label: 'Ataque 1/4 · Espadas verticales', duration: 12000 },
+			{ key: 'horizontal', label: 'Ataque 2/4 · Espadas horizontales', duration: 12000 },
+			{ key: 'laser', label: 'Ataque 3/4 · Lasers circulares', duration: 12000 },
+			{ key: 'chase', label: 'Ataque 4/4 · Bolitas perseguidoras', duration: 12000 }
+		];
+
+		let currentAttackIndex = 0;
+		let attackTime = 0;
+		let running = false;
+		let ended = false;
+		let lastTime = 0;
+
+		const keys = {
+			left: false,
+			right: false
+		};
+
+		const hazards = {
+			vertical: [],
+			horizontal: [],
+			laserPatterns: [],
+			chase: []
+		};
+
+		const cooldown = {
+			vertical: 0,
+			horizontal: 0,
+			laser: 0,
+			chase: 0
+		};
+
+		const bgImg = new Image();
+		bgImg.src = '/Images/radianceBack.jfif';
+		const bossImg = new Image();
+		bossImg.src = '/Images/THERADIANCE.webp';
+		const verticalSwordImg = new Image();
+		verticalSwordImg.src = '/Images/rEspVertical.png';
+		const horizontalRightImg2 = new Image();
+		horizontalRightImg2.src = '/Images/rEspHorDer2.png';
+		const horizontalRightImg3 = new Image();
+		horizontalRightImg3.src = '/Images/rEspHorDer3.png';
+		const horizontalLeftImg2 = new Image();
+		horizontalLeftImg2.src = '/Images/rEspHorIzq2.png';
+		const horizontalLeftImg3 = new Image();
+		horizontalLeftImg3.src = '/Images/rEspHorIzq3.png';
+		const chaseBallImg = new Image();
+		chaseBallImg.src = '/Images/bolita.png';
+
+		function clamp(value, min, max) {
+			return Math.max(min, Math.min(max, value));
+		}
+
+		function resetFight() {
+			player.x = arena.width * 0.5;
+			player.y = arena.floor;
+			player.vx = 0;
+			player.vy = 0;
+			player.onGround = true;
+			player.hp = 100;
+			player.iFrames = 0;
+			currentAttackIndex = 0;
+			attackTime = 0;
+			ended = false;
+			hazards.vertical = [];
+			hazards.horizontal = [];
+			hazards.laserPatterns = [];
+			hazards.chase = [];
+			cooldown.vertical = 0;
+			cooldown.horizontal = 0;
+			cooldown.laser = 0;
+			cooldown.chase = 0;
+			updateHud();
+			statusEl.textContent = attacks[0].label;
+		}
+
+		function updateHud() {
+			hpFill.style.width = player.hp + '%';
+			waveEl.textContent = `Ataque ${Math.min(currentAttackIndex + 1, 4)}/4`;
+		}
+
+		function hitPlayer(damage, message) {
+			if (player.iFrames > 0 || ended) return;
+			player.hp = Math.max(0, player.hp - damage);
+			player.iFrames = 32;
+			statusEl.textContent = message;
+			updateHud();
+			if (player.hp <= 0) {
+				ended = true;
+				running = false;
+				overlay.style.display = 'flex';
+				overlay.querySelector('h3').textContent = 'Has caído';
+				overlay.querySelector('p').textContent = 'Radiance te derrotó. Presiona para intentar otra vez.';
+				startBtn.textContent = 'Reintentar';
+			}
+		}
+
+		function playerRect() {
+			return {
+				x: player.x - player.w / 2,
+				y: player.y - player.h,
+				w: player.w,
+				h: player.h
+			};
+		}
+
+		function rectIntersects(a, b) {
+			return a.x < b.x + b.w &&
+				a.x + a.w > b.x &&
+				a.y < b.y + b.h &&
+				a.y + a.h > b.y;
+		}
+
+		function spawnVerticalWave() {
+			const laneWidth = 100;
+			const lanes = Math.floor(arena.width / laneWidth);
+			const gapStart = Math.floor(Math.random() * Math.max(1, lanes - 1));
+			for (let i = 0; i < lanes; i++) {
+				if (i === gapStart) continue;
+				hazards.vertical.push({
+					x: i * laneWidth + laneWidth * 0.06,
+					y: -50,
+					w: laneWidth * 0.88,
+					h: 60,
+					vy: 4.8
+				});
+			}
+		}
+
+		function updateVertical(dt) {
+			cooldown.vertical -= dt;
+			if (cooldown.vertical <= 0) {
+				spawnVerticalWave();
+				cooldown.vertical = 1400;
+			}
+
+			const p = playerRect();
+			for (let i = hazards.vertical.length - 1; i >= 0; i--) {
+				const sword = hazards.vertical[i];
+				sword.y += sword.vy;
+				if (rectIntersects(p, sword)) {
+					hitPlayer(7, 'Las espadas del cielo te alcanzan.');
+				}
+				if (sword.y > arena.height + 60) {
+					hazards.vertical.splice(i, 1);
+				}
+			}
+		}
+
+		function spawnHorizontalWave() {
+			const centerY = 200 + Math.random() * 120;
+			const gap = 70 + Math.random() * 30;
+			const topHeight = Math.max(0, centerY - gap / 2);
+			const bottomHeight = arena.floor - (centerY + gap / 2);
+			const topVariant = topHeight < 180 ? 2 : 3;
+			const bottomVariant = bottomHeight < 180 ? 2 : 3;
+			const topHitboxH = Math.min(32, Math.max(20, topHeight * 0.28));
+			const bottomHitboxH = Math.min(32, Math.max(20, bottomHeight * 0.28));
+			hazards.horizontal.push({
+				x: -200,
+				y: 0,
+				w: 200,
+				h: topHeight,
+				vx: 4.4,
+				variant: topVariant,
+				hitbox: {
+					x: -200,
+					y: Math.max(0, (topHeight - topHitboxH) / 2),
+					w: 200,
+					h: topHitboxH
+				}
+			});
+			hazards.horizontal.push({
+				x: -200,
+				y: centerY + gap / 2,
+				w: 200,
+				h: bottomHeight,
+				vx: 4.4,
+				variant: bottomVariant,
+				hitbox: {
+					x: -200,
+					y: arena.floor - bottomHitboxH,
+					w: 200,
+					h: bottomHitboxH
+				}
+			});
+
+			hazards.horizontal.push({
+				x: arena.width,
+				y: 0,
+				w: 200,
+				h: topHeight,
+				vx: -4.4,
+				variant: topVariant,
+				hitbox: {
+					x: arena.width,
+					y: Math.max(0, (topHeight - topHitboxH) / 2),
+					w: 200,
+					h: topHitboxH
+				}
+			});
+			hazards.horizontal.push({
+				x: arena.width,
+				y: centerY + gap / 2,
+				w: 200,
+				h: bottomHeight,
+				vx: -4.4,
+				variant: bottomVariant,
+				hitbox: {
+					x: arena.width,
+					y: arena.floor - bottomHitboxH,
+					w: 200,
+					h: bottomHitboxH
+				}
+			});
+		}
+
+		function updateHorizontal(dt) {
+			cooldown.horizontal -= dt;
+			if (cooldown.horizontal <= 0) {
+				spawnHorizontalWave();
+				cooldown.horizontal = 1800;
+			}
+
+			const p = playerRect();
+			for (let i = hazards.horizontal.length - 1; i >= 0; i--) {
+				const segment = hazards.horizontal[i];
+				if (segment.vx !== 0) {
+					segment.x += segment.vx;
+					if (segment.hitbox) segment.hitbox.x += segment.vx;
+				}
+
+				if (segment.ttl !== undefined) {
+					segment.ttl -= dt;
+				}
+
+				if (rectIntersects(p, segment.hitbox || segment)) {
+					hitPlayer(9, 'Las espadas laterales cierran el paso.');
+				}
+
+				const outLeft = segment.x + segment.w < -420;
+				const outRight = segment.x > arena.width + 420;
+				const expired = segment.ttl !== undefined && segment.ttl <= 0;
+
+				if (outLeft || outRight || expired) {
+					hazards.horizontal.splice(i, 1);
+				}
+			}
+		}
+
+		function spawnLaserRing() {
+			const base = Math.random() * Math.PI;
+			hazards.laserPatterns.push({
+				state: 'warning',
+				ttl: 680,
+				angles: Array.from({ length: 10 }, (_, i) => base + i * (Math.PI * 2 / 10))
+			});
+		}
+
+		function pointToSegmentDistance(px, py, x1, y1, x2, y2) {
+			const dx = x2 - x1;
+			const dy = y2 - y1;
+			if (dx === 0 && dy === 0) return Math.hypot(px - x1, py - y1);
+			const t = clamp(((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy), 0, 1);
+			const nx = x1 + t * dx;
+			const ny = y1 + t * dy;
+			return Math.hypot(px - nx, py - ny);
+		}
+
+		function updateLaser(dt) {
+			cooldown.laser -= dt;
+			if (cooldown.laser <= 0) {
+				spawnLaserRing();
+				cooldown.laser = 1450;
+			}
+
+			for (let i = hazards.laserPatterns.length - 1; i >= 0; i--) {
+				const pattern = hazards.laserPatterns[i];
+
+				if (pattern.state === 'warning') {
+					pattern.ttl -= dt;
+					if (pattern.ttl <= 0) {
+						pattern.state = 'gap';
+						pattern.ttl = 110;
+					}
+					continue;
+				}
+
+				if (pattern.state === 'gap') {
+					pattern.ttl -= dt;
+					if (pattern.ttl <= 0) {
+						pattern.state = 'active';
+						pattern.ttl = 360;
+					}
+					continue;
+				}
+
+				if (pattern.state === 'active') {
+					const x1 = radiance.x;
+					const y1 = radiance.y;
+					for (const a of pattern.angles) {
+						const x2 = x1 + Math.cos(a) * 1300;
+						const y2 = y1 + Math.sin(a) * 1300;
+						const dist = pointToSegmentDistance(player.x, player.y - player.h * 0.5, x1, y1, x2, y2);
+						if (dist < 14) {
+							hitPlayer(8, 'Un láser te quema al atravesar la arena.');
+							break;
+						}
+					}
+
+					pattern.ttl -= dt;
+					if (pattern.ttl <= 0) {
+						hazards.laserPatterns.splice(i, 1);
+					}
+				}
+			}
+		}
+
+		function spawnChasingBalls() {
+			const count = 2;
+			for (let i = 0; i < count; i++) {
+				const angle = (Math.PI * 2 * i) / count;
+				hazards.chase.push({
+					x: radiance.x + Math.cos(angle) * 120,
+					y: radiance.y + Math.sin(angle) * 120,
+					vx: 0,
+					vy: 0,
+					r: 28,
+					speed: 3.8,
+					ttl: 6000
+				});
+			}
+		}
+
+		function updateChase(dt) {
+			cooldown.chase -= dt;
+			if (cooldown.chase <= 0) {
+				spawnChasingBalls();
+				cooldown.chase = 2000;
+			}
+
+			const p = playerRect();
+			for (let i = hazards.chase.length - 1; i >= 0; i--) {
+				const ball = hazards.chase[i];
+				
+				ball.ttl -= dt;
+
+				// Seguimiento errático hacia el jugador con bastante aleatoriedad
+				const dx = player.x - ball.x;
+				const dy = (player.y - player.h * 0.5) - ball.y;
+				const dist = Math.hypot(dx, dy);
+				
+				if (dist > 0.1) {
+					// Agregar aleatoriedad significativa al ángulo de ataque
+					const angle = Math.atan2(dy, dx);
+					const randomAngle = angle + (Math.random() - 0.5) * 0.45;
+					
+					// Velocidad consistente hacia el objetivo con aleatoriedad
+					const targetVx = Math.cos(randomAngle) * ball.speed;
+					const targetVy = Math.sin(randomAngle) * ball.speed;
+					
+					// Aceleración media para mantener seguimiento consistente con inercia
+					ball.vx += (targetVx - ball.vx) * 0.14;
+					ball.vy += (targetVy - ball.vy) * 0.14;
+				}
+				
+				// Limitar velocidades
+				ball.vx = Math.max(-5.5, Math.min(5.5, ball.vx));
+				ball.vy = Math.max(-5.5, Math.min(6.5, ball.vy));
+				
+				// Aplicar gravedad leve para ayudar a caer al piso
+				ball.vy += gravity * 0.4;
+				
+				ball.x += ball.vx;
+				ball.y += ball.vy;
+
+				// Colisión con el jugador
+				if (rectIntersects(p, { x: ball.x - ball.r, y: ball.y - ball.r, w: ball.r * 2, h: ball.r * 2 })) {
+					hitPlayer(7, 'Una bolita ardiente te golpea.');
+					hazards.chase.splice(i, 1);
+					continue;
+				}
+
+				// Choque con límites de la sala
+				if (ball.x - ball.r < 0 || ball.x + ball.r > arena.width || 
+				    ball.y - ball.r < 0 || ball.y + ball.r > arena.floor) {
+					hazards.chase.splice(i, 1);
+					continue;
+				}
+
+				// Desaparición por tiempo
+				if (ball.ttl <= 0) {
+					hazards.chase.splice(i, 1);
+				}
+			}
+		}
+
+		function updatePlayer() {
+			player.vx = 0;
+			if (keys.left) player.vx -= player.speed;
+			if (keys.right) player.vx += player.speed;
+
+			player.x += player.vx;
+			player.x = clamp(player.x, player.w / 2, arena.width - player.w / 2);
+
+			player.vy += gravity;
+			player.y += player.vy;
+
+			if (player.y >= arena.floor) {
+				player.y = arena.floor;
+				player.vy = 0;
+				player.onGround = true;
+			} else {
+				player.onGround = false;
+			}
+
+			if (player.iFrames > 0) {
+				player.iFrames--;
+			}
+		}
+
+		function setAttack(index) {
+			currentAttackIndex = index;
+			attackTime = 0;
+			hazards.vertical = [];
+			hazards.horizontal = [];
+			hazards.laserPatterns = [];
+			hazards.curved = [];
+			cooldown.vertical = 0;
+			cooldown.horizontal = 0;
+			cooldown.laser = 0;
+			cooldown.curved = 0;
+			statusEl.textContent = attacks[index].label;
+			updateHud();
+		}
+
+		function advanceAttackIfNeeded() {
+			if (attackTime >= attacks[currentAttackIndex].duration) {
+				if (currentAttackIndex < attacks.length - 1) {
+					setAttack(currentAttackIndex + 1);
+				} else {
+					running = false;
+					ended = true;
+					statusEl.textContent = '¡Sobreviviste a todos los ataques!';
+					victoryEl.style.display = 'block';
+					overlay.style.display = 'flex';
+					overlay.querySelector('h3').textContent = 'Victoria';
+					overlay.querySelector('p').textContent = 'Radiance fue derrotada y el reino ha sido liberado.';
+					startBtn.style.display = 'none';
+				}
+			}
+		}
+
+		function drawArenaBackground() {
+			if (bgImg.complete && bgImg.naturalWidth > 0) {
+				ctx.drawImage(bgImg, 0, 0, arena.width, arena.height);
+			} else {
+				ctx.fillStyle = '#0b0b12';
+				ctx.fillRect(0, 0, arena.width, arena.height);
+			}
+
+			ctx.fillStyle = 'rgba(0,0,0,0.22)';
+			ctx.fillRect(0, arena.floor, arena.width, arena.height - arena.floor);
+		}
+
+		function drawRadiance() {
+			if (bossImg.complete && bossImg.naturalWidth > 0) {
+				const w = 480;
+				const h = 480;
+				ctx.drawImage(bossImg, radiance.x - w / 2, radiance.y - h / 2, w, h);
+			} else {
+				ctx.beginPath();
+				ctx.fillStyle = 'rgba(255,245,190,0.9)';
+				ctx.arc(radiance.x, radiance.y, radiance.r, 0, Math.PI * 2);
+				ctx.fill();
+			}
+		}
+
+		function drawHazards() {
+			ctx.fillStyle = 'rgba(235, 235, 255, 0.95)';
+			hazards.vertical.forEach((s) => {
+				if (verticalSwordImg.complete && verticalSwordImg.naturalWidth > 0) {
+					const drawW = s.w * 0.9;
+					const drawH = s.h * 2.0;
+					const drawX = s.x + (s.w - drawW) / 2;
+					const drawY = s.y - (drawH - s.h) * 0.98;
+					ctx.drawImage(verticalSwordImg, drawX, drawY, drawW, drawH);
+				} else {
+					ctx.fillRect(s.x, s.y, s.w, s.h);
+				}
+			});
+
+			ctx.fillStyle = 'rgba(250, 250, 255, 0.9)';
+			hazards.horizontal.forEach((s) => {
+				const variant = s.h >= 180 ? 3 : 2;
+				const sprite = s.vx >= 0
+					? (variant === 3 ? horizontalRightImg3 : horizontalRightImg2)
+					: (variant === 3 ? horizontalLeftImg3 : horizontalLeftImg2);
+				if (sprite.complete && sprite.naturalWidth > 0) {
+					ctx.drawImage(sprite, s.x, s.y, s.w, s.h);
+				} else {
+					ctx.fillRect(s.x, s.y, s.w, s.h);
+				}
+			});
+
+			hazards.laserPatterns.forEach((pattern) => {
+				if (pattern.state === 'warning' || pattern.state === 'active') {
+					ctx.save();
+					ctx.strokeStyle = pattern.state === 'warning' ? 'rgba(155, 235, 255, 0.75)' : 'rgba(255, 230, 180, 0.96)';
+					ctx.lineWidth = pattern.state === 'warning' ? 2 : 4;
+					ctx.setLineDash(pattern.state === 'warning' ? [14, 10] : []);
+					ctx.beginPath();
+					for (const a of pattern.angles) {
+						const x2 = radiance.x + Math.cos(a) * 1300;
+						const y2 = radiance.y + Math.sin(a) * 1300;
+						ctx.moveTo(radiance.x, radiance.y);
+						ctx.lineTo(x2, y2);
+					}
+					ctx.stroke();
+					ctx.restore();
+				}
+			});
+
+			ctx.fillStyle = 'rgba(255, 100, 100, 0.9)';
+			hazards.chase.forEach((ball) => {
+				if (chaseBallImg.complete && chaseBallImg.naturalWidth > 0) {
+					ctx.drawImage(chaseBallImg, ball.x - ball.r, ball.y - ball.r, ball.r * 2, ball.r * 2);
+				} else {
+					ctx.beginPath();
+					ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+					ctx.fill();
+				}
+			});
+		}
+
+		function drawPlayer() {
+			const px = player.x - player.w / 2;
+			const py = player.y - player.h;
+			const blink = player.iFrames > 0 && Math.floor(player.iFrames / 3) % 2 === 0;
+			ctx.fillStyle = blink ? 'rgba(255,255,255,0.35)' : 'rgba(170, 220, 255, 0.98)';
+			ctx.fillRect(px, py, player.w, player.h);
+			ctx.fillStyle = 'rgba(30,45,80,0.95)';
+			ctx.fillRect(px + 7, py + 10, 8, 8);
+			ctx.fillRect(px + player.w - 15, py + 10, 8, 8);
+		}
+
+		function updateAttack(dt) {
+			const attack = attacks[currentAttackIndex];
+			if (!attack) return;
+			if (attack.key === 'vertical') updateVertical(dt);
+			if (attack.key === 'horizontal') updateHorizontal(dt);
+			if (attack.key === 'laser') updateLaser(dt);
+			if (attack.key === 'chase') updateChase(dt);
+		}
+
+		function frame(timestamp) {
+			const dt = Math.min(50, timestamp - (lastTime || timestamp));
+			lastTime = timestamp;
+
+			drawArenaBackground();
+			drawRadiance();
+
+			if (running && !ended) {
+				attackTime += dt;
+				updatePlayer();
+				updateAttack(dt);
+				advanceAttackIfNeeded();
+			}
+
+			drawHazards();
+			drawPlayer();
+
+			requestAnimationFrame(frame);
+		}
+
+		function jump() {
+			if (player.onGround && running && !ended) {
+				player.vy = player.jump;
+				player.onGround = false;
+			}
+		}
+
+		document.addEventListener('keydown', (e) => {
+			const code = e.code;
+			if (code === 'ArrowLeft' || code === 'KeyA') keys.left = true;
+			if (code === 'ArrowRight' || code === 'KeyD') keys.right = true;
+			if (code === 'ArrowUp' || code === 'KeyW' || code === 'Space') {
+				e.preventDefault();
+				jump();
+			}
+		});
+
+		document.addEventListener('keyup', (e) => {
+			const code = e.code;
+			if (code === 'ArrowLeft' || code === 'KeyA') keys.left = false;
+			if (code === 'ArrowRight' || code === 'KeyD') keys.right = false;
+		});
+
+		startBtn.addEventListener('click', () => {
+			resetFight();
+			setAttack(0);
+			overlay.style.display = 'none';
+			startBtn.style.display = 'inline-block';
+			startBtn.textContent = 'Comenzar combate';
+			running = true;
+			ended = false;
+			victoryEl.style.display = 'none';
+		});
+
+		resetFight();
+		requestAnimationFrame(frame);
+	})();
+</script>

@@ -1,0 +1,235 @@
+@using System.Text.Json
+@model SalaTriviaViewModel
+
+@{
+    ViewData["Title"] = "Sala 1";
+    var mensaje = TempData["Sala1Mensaje"] as string;
+}
+
+<div class="text-center">
+    <h2>Sala 1: El juicio de los maestros</h2>
+
+    @if (!string.IsNullOrWhiteSpace(mensaje))
+    {
+        <div class="alert alert-info mt-3">@mensaje</div>
+    }
+
+    <p>
+        El primer portal se abre ante ti. Responde las tres preguntas para ganar la confianza de los guardianes.
+    </p>
+
+    @if (Model?.Preguntas == null || Model.Preguntas.Count == 0)
+    {
+        <div class="alert alert-warning mt-3">No hay preguntas cargadas para la sala 1.</div>
+    }
+    else
+    {
+        <form method="post" action="@Url.Action("ValidarSala1", "Home")" id="quizForm" class="mx-auto" style="max-width:800px;">
+            <div id="dialogContainer" style="display:flex;gap:16px;align-items:flex-start;">
+                <div style="width:140px;">
+                    <img id="charImage" src="/Images/Oro.png" alt="Personaje" style="width:100%;border-radius:8px;border:2px solid #333;" />
+                    <div id="charName" style="margin-top:8px;font-weight:600;text-align:center;">Oro</div>
+                </div>
+
+                <div style="flex:1;text-align:left;">
+                    <div id="dialogBox" style="background:#fff;border:2px solid #444;padding:12px;border-radius:8px;min-height:72px;">
+                        <div id="dialogText" style="font-size:16px;color:#111;"></div>
+                    </div>
+
+                    <div id="optionsArea" style="margin-top:12px;display:none;"></div>
+
+                    <div id="feedbackArea" style="margin-top:8px;min-height:24px;"></div>
+
+                    <div style="margin-top:12px;">
+                        <button type="button" id="nextBtn" class="btn btn-primary" style="display:none;">Siguiente</button>
+                        <button type="submit" id="submitBtn" class="btn btn-success" style="display:none;">Enviar respuestas</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    }
+</div>
+
+<div id="nailOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:10000;">
+    <div style="background:#111;color:#fff;padding:18px;border-radius:10px;display:flex;gap:16px;align-items:center;max-width:900px;width:90%;">
+        <div style="width:200px;flex:0 0 200px;">
+            <img src="/Images/Aguijon-Roto.png" alt="Aguijón Roto" style="width:100%;border-radius:8px;border:2px solid #333;" />
+        </div>
+        <div style="flex:1;">
+            <h3 style="margin:0 0 6px 0;">Has obtenido el Aguijón Roto</h3>
+            <p id="nailDialogText" style="margin:0 0 6px 0;">Te han entregado el aguijón roto. Te ayudará en lo que viene.</p>
+            <div style="margin-top:12px;">
+                <button id="nailContinueBtn" class="btn btn-primary">Continuar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        const trivia = @Html.Raw(JsonSerializer.Serialize(Model));
+        const questions = (trivia?.Preguntas || []).map((pregunta, index) => ({
+            id: pregunta.Id,
+            text: pregunta.Pregunta,
+            inputName: `q${index + 1}`,
+            name: ['Oro', 'Sheo', 'Mato'][index] || `Pregunta ${index + 1}`,
+            img: ['/Images/Oro.png', '/Images/Sheo.png', '/Images/Mato.png'][index] || '/Images/Oro.png',
+            options: (pregunta.Respuestas || []).map(r => ({ id: r.Id, text: r.Respuesta, correct: r.EsCorrecta }))
+        }));
+
+        if (!questions.length) {
+            return;
+        }
+
+        let idx = 0;
+        const charImage = document.getElementById('charImage');
+        const charName = document.getElementById('charName');
+        const dialogText = document.getElementById('dialogText');
+        const optionsArea = document.getElementById('optionsArea');
+        const feedbackArea = document.getElementById('feedbackArea');
+        const nextBtn = document.getElementById('nextBtn');
+        const submitBtn = document.getElementById('submitBtn');
+        const form = document.getElementById('quizForm');
+
+        const answersSelected = {};
+
+        function typeText(text, cb) {
+            dialogText.textContent = '';
+            let i = 0;
+            const t = setInterval(() => {
+                dialogText.textContent += text.charAt(i);
+                i++;
+                if (i >= text.length) {
+                    clearInterval(t);
+                    cb && cb();
+                }
+            }, 18);
+        }
+
+        function renderOptions(q) {
+            optionsArea.innerHTML = '';
+            q.options.forEach((opt, j) => {
+                const id = `${q.inputName}_${j}`;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'form-check';
+
+                const input = document.createElement('input');
+                input.className = 'form-check-input';
+                input.type = 'radio';
+                input.name = q.inputName;
+                input.id = id;
+                input.value = opt.id;
+                if (j === 0) input.required = true;
+
+                const label = document.createElement('label');
+                label.className = 'form-check-label';
+                label.htmlFor = id;
+                label.textContent = opt.text;
+
+                wrapper.appendChild(input);
+                wrapper.appendChild(label);
+                optionsArea.appendChild(wrapper);
+            });
+
+            optionsArea.style.display = '';
+            feedbackArea.innerHTML = '';
+        }
+
+        function showQuestion(i) {
+            const q = questions[i];
+            charImage.src = q.img;
+            charName.textContent = q.name;
+            optionsArea.style.display = 'none';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'none';
+
+            typeText(q.text, () => {
+                renderOptions(q);
+                if (i < questions.length - 1) {
+                    nextBtn.style.display = '';
+                } else {
+                    submitBtn.style.display = '';
+                }
+            });
+        }
+
+        function persistAnswer(q, selectedValue) {
+            answersSelected[q.inputName] = selectedValue;
+            let hidden = form.querySelector(`input[name="${q.inputName}"][type="hidden"]`);
+            if (!hidden) {
+                hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = q.inputName;
+                form.appendChild(hidden);
+            }
+            hidden.value = selectedValue;
+        }
+
+        nextBtn.addEventListener('click', () => {
+            const q = questions[idx];
+            const selected = form.querySelector(`input[name="${q.inputName}"]:checked`);
+            if (!selected) {
+                alert('Por favor selecciona una respuesta antes de continuar.');
+                return;
+            }
+
+            persistAnswer(q, selected.value);
+            feedbackArea.innerHTML = '<div style="color:green;font-weight:600;">Respuesta guardada.</div>';
+
+            setTimeout(() => {
+                idx++;
+                showQuestion(idx);
+            }, 900);
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const q = questions[idx];
+            const selected = form.querySelector(`input[name="${q.inputName}"]:checked`);
+            if (!selected) {
+                alert('Por favor selecciona una respuesta antes de continuar.');
+                return;
+            }
+
+            persistAnswer(q, selected.value);
+
+            const total = questions.reduce((count, pregunta) => {
+                const selectedId = Number(answersSelected[pregunta.inputName] || 0);
+                const isCorrect = pregunta.options.some(opt => Number(opt.id) === selectedId && opt.correct);
+                return count + (isCorrect ? 1 : 0);
+            }, 0);
+
+            feedbackArea.innerHTML = '<div style="font-weight:700;">Has acertado ' + total + ' de ' + questions.length + ' preguntas.</div>';
+
+            if (total === questions.length) {
+                showNailOverlay();
+            } else {
+                setTimeout(() => form.submit(), 900);
+            }
+        });
+
+        showQuestion(0);
+    })();
+
+    function showNailOverlay() {
+        const overlay = document.getElementById('nailOverlay');
+        const continueBtn = document.getElementById('nailContinueBtn');
+        const form = document.getElementById('quizForm');
+
+        if (overlay) overlay.style.display = 'flex';
+
+        if (continueBtn) {
+            continueBtn.addEventListener('click', function () {
+                continueBtn.disabled = true;
+                continueBtn.textContent = 'Entrando a la Sala 2...';
+
+                if (form) {
+                    form.submit();
+                } else {
+                    window.location.href = '@Url.Action("pasarSala", "Home", new { IdSala = 1 })';
+                }
+            }, { once: true });
+        }
+    }
+</script>

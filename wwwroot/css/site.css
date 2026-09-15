@@ -1,0 +1,1464 @@
+html {
+  font-size: 14px;
+  scroll-behavior: smooth;
+}
+
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+.form-check-label {
+  color: #edf7ff;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-shadow: 0 0 10px rgba(113, 171, 255, 0.35);
+}
+
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  margin-bottom: 60px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top, rgba(69, 90, 117, 0.32), transparent 28%),
+    linear-gradient(180deg, #050a11 0%, #0c1320 35%, #0a1017 100%);
+  color: #eaf4ff;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(120deg, rgba(91, 162, 255, 0.06), rgba(0, 0, 0, 0), rgba(138, 233, 216, 0.05));
+}
+
+.navbar {
+  background: rgba(10, 15, 22, 0.85) !important;
+  border-bottom: 1px solid rgba(150, 194, 255, 0.28) !important;
+  box-shadow: 0 0 18px rgba(46, 132, 255, 0.12);
+  backdrop-filter: blur(8px);
+}
+
+.navbar-brand,
+.nav-link {
+  color: #edf7ff !important;
+  text-shadow: 0 0 10px rgba(113, 171, 255, 0.35);
+}
+
+.nav-link:hover,
+.navbar-brand:hover {
+  color: #9de7d3 !important;
+}
+
+.container {
+  max-width: 1200px;
+}
+
+main {
+  background: rgba(14, 20, 28, 0.78);
+  border: 1px solid rgba(134, 176, 214, 0.28);
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: 0 14px 35px rgba(0, 0, 0, 0.35), inset 0 0 25px rgba(90, 121, 170, 0.08);
+}
+
+h1, h2, h3, h4, h5, h6, p {
+  color: #e9f5ff;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(132, 194, 255, 0.22);
+}
+
+li, label, input, a {
+  color: #000000;
+}
+
+ a {
+  color: #8ed7ff;
+  text-decoration: none;
+  transition: color 0.2s ease, text-shadow 0.2s ease;
+}
+
+ a:hover {
+  color: #baf4e3;
+  text-shadow: 0 0 10px rgba(120, 255, 214, 0.3);
+}
+
+input[type="submit"],
+button,
+.btn {
+  background: linear-gradient(135deg, #1b3957 0%, #0d1d2d 100%);
+  border: 1px solid rgba(123, 180, 255, 0.55);
+  color: #edf7ff;
+  border-radius: 999px;
+  padding: 0.7rem 1.4rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  box-shadow: 0 0 16px rgba(103, 167, 255, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+input[type="submit"]:hover,
+button:hover,
+.btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 0 22px rgba(118, 194, 255, 0.4);
+  border-color: rgba(161, 216, 255, 0.9);
+}
+
+.footer {
+  background: rgba(8, 11, 17, 0.8);
+  border-top: 1px solid rgba(141, 180, 220, 0.22) !important;
+  color: #b9d7ef;
+  padding: 1rem 0;
+}
+
+.footer a {
+  color: #8de6d4;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.integrantes-img {
+  width: 220px;
+  height: 220px;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 0;
+  display: block;
+  margin: 0 auto;
+  border: 2px solid rgba(141, 180, 220, 0.35);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+}
+
+/* Hollow Knight inspired theme */
+body {
+  background:
+    radial-gradient(circle at top, rgba(70, 52, 92, 0.26), transparent 28%),
+    radial-gradient(circle at 20% 15%, rgba(168, 131, 74, 0.08), transparent 18%),
+    linear-gradient(180deg, #040308 0%, #09070f 34%, #0f0d16 100%);
+  color: #f2eadb;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body::before {
+  background: linear-gradient(120deg, rgba(190, 157, 96, 0.05), rgba(255, 255, 255, 0), rgba(140, 118, 214, 0.05));
+}
+
+header,
+.navbar {
+  background: rgba(7, 8, 13, 0.9) !important;
+  border-bottom: 1px solid rgba(210, 180, 110, 0.22) !important;
+  box-shadow: 0 0 22px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(10px);
+}
+
+.navbar-brand,
+.nav-link {
+  color: #f5ebd8 !important;
+  text-shadow: 0 0 14px rgba(207, 177, 116, 0.18);
+}
+
+.navbar-brand:hover,
+.nav-link:hover {
+  color: #d7c08d !important;
+}
+
+main {
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.03), transparent 30%),
+    linear-gradient(180deg, rgba(13, 12, 19, 0.92), rgba(7, 7, 11, 0.94));
+  border: 1px solid rgba(205, 180, 125, 0.18);
+  border-radius: 20px;
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.45), inset 0 0 30px rgba(255, 255, 255, 0.02);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #f4e8cf;
+  font-family: Georgia, "Times New Roman", serif;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(199, 172, 108, 0.16);
+}
+
+p,
+li,
+label {
+  color: #e5dccb;
+  line-height: 1.75;
+}
+
+a {
+  color: #d7c08d;
+}
+
+a:hover {
+  color: #f3dfad;
+}
+
+.btn,
+button,
+input[type="submit"] {
+  background: linear-gradient(180deg, rgba(40, 34, 46, 0.95), rgba(17, 15, 22, 0.98));
+  color: #f4ead9;
+  border: 1px solid rgba(214, 190, 133, 0.42);
+  border-radius: 999px;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25), 0 10px 22px rgba(0, 0, 0, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.btn:hover,
+button:hover,
+input[type="submit"]:hover {
+  transform: translateY(-1px);
+  border-color: rgba(240, 223, 177, 0.8);
+  box-shadow: 0 0 18px rgba(210, 183, 124, 0.18), 0 12px 26px rgba(0, 0, 0, 0.36);
+}
+
+.btn-primary,
+.btn-success,
+.btn-danger {
+  background: linear-gradient(180deg, rgba(54, 46, 65, 0.98), rgba(20, 17, 25, 0.98));
+}
+
+.alert {
+  background: rgba(17, 16, 23, 0.82);
+  color: #f4e8cf;
+  border: 1px solid rgba(198, 171, 114, 0.2);
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.03);
+}
+
+.form-control,
+.form-select,
+textarea {
+  background: rgba(12, 11, 18, 0.95);
+  color: #f7efe2;
+  border: 1px solid rgba(190, 161, 94, 0.22);
+  border-radius: 12px;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  border-color: rgba(231, 207, 152, 0.6);
+  box-shadow: 0 0 0 0.2rem rgba(160, 128, 72, 0.16);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.index-body {
+  background-image:
+    linear-gradient(180deg, rgba(2, 3, 6, 0.3), rgba(2, 3, 6, 0.72)),
+    url('/Images/images.jfif');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.index-body .text-center {
+  background: rgba(7, 7, 12, 0.68);
+  border: 1px solid rgba(208, 180, 117, 0.22);
+  border-radius: 18px;
+  padding: 2rem;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
+}
+
+.text-center > p,
+.text-center > h1,
+.text-center > h2 {
+  text-shadow: 0 0 12px rgba(205, 177, 118, 0.12);
+}
+
+/* Sala 1 */
+#quizForm {
+  max-width: 920px !important;
+}
+
+#dialogContainer {
+  display: flex;
+  gap: 1.2rem;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 1.25rem;
+  border-radius: 18px;
+  background: rgba(8, 8, 13, 0.75);
+  border: 1px solid rgba(205, 180, 125, 0.18);
+  box-shadow: inset 0 0 22px rgba(255, 255, 255, 0.02);
+}
+
+#dialogContainer > div:first-child {
+  width: 160px;
+}
+
+#charImage,
+#nailOverlay img,
+#prebattleOverlay img,
+#defeatOverlay img,
+#zoteOverlay img {
+  width: 100%;
+  display: block;
+  border-radius: 10px;
+  border: 1px solid rgba(219, 194, 137, 0.35);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.35);
+}
+
+#charName {
+  margin-top: 0.65rem;
+  font-weight: 700;
+  color: #f3dfad;
+  text-shadow: 0 0 10px rgba(198, 167, 100, 0.18);
+}
+
+#dialogBox {
+  background: linear-gradient(180deg, rgba(22, 20, 28, 0.94), rgba(10, 10, 14, 0.96)) !important;
+  border: 1px solid rgba(214, 187, 126, 0.26) !important;
+  border-radius: 16px !important;
+  padding: 1rem !important;
+  min-height: 92px !important;
+  box-shadow: inset 0 0 18px rgba(255, 255, 255, 0.02);
+}
+
+#dialogText {
+  color: #f6efe0 !important;
+  font-size: 1rem !important;
+  line-height: 1.7;
+}
+
+#optionsArea {
+  margin-top: 1rem;
+}
+
+.form-check {
+  padding: 0.55rem 0.75rem;
+  margin-bottom: 0.6rem;
+  border: 1px solid rgba(201, 174, 113, 0.16);
+  border-radius: 12px;
+  background: rgba(14, 13, 19, 0.72);
+}
+
+.form-check-label {
+  color: #f2e8d7;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+}
+
+#feedbackArea {
+  min-height: 24px;
+}
+
+#nailOverlay,
+#prebattleOverlay,
+#defeatOverlay,
+#zoteOverlay {
+  background: rgba(2, 2, 4, 0.88) !important;
+  backdrop-filter: blur(5px);
+}
+
+#nailOverlay > div,
+#prebattleOverlay > div,
+#defeatOverlay > div,
+#zoteOverlay > div {
+  background: linear-gradient(180deg, rgba(22, 20, 28, 0.98), rgba(10, 10, 14, 0.98)) !important;
+  color: #f4ead9 !important;
+  padding: 1.25rem !important;
+  border-radius: 18px !important;
+  border: 1px solid rgba(216, 189, 128, 0.24);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.48);
+}
+
+/* Sala 2 */
+.sala2-scene,
+.forge-scene,
+.sala4-scene {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sala2-intro,
+.forge-intro,
+.sala4-intro {
+  background: rgba(10, 10, 15, 0.6);
+  border: 1px solid rgba(205, 180, 125, 0.14);
+  border-radius: 16px;
+  padding: 1.1rem 1.2rem;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.sala2-combat,
+.forge-container {
+  gap: 1.6rem;
+}
+
+.sala2-panel,
+.forge-panel {
+  background: linear-gradient(180deg, rgba(15, 14, 21, 0.96), rgba(8, 8, 12, 0.98));
+  border: 1px solid rgba(209, 183, 126, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 16px 34px rgba(0, 0, 0, 0.32);
+}
+
+.sala2-status-text,
+.forge-status-text,
+.sala4-status,
+.sala4-overlay p,
+.sala4-overlay h3 {
+  color: #f4ead9;
+}
+
+.sala2-bar,
+.forge-progress-bar,
+.timing-bar,
+.sala4-bar {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(205, 180, 125, 0.16);
+}
+
+.sala2-fill.enemy,
+.forge-progress-fill,
+.sala4-fill {
+  background: linear-gradient(90deg, #6e4f2d, #d2b06c, #f2dfb1);
+}
+
+.sala2-fill.player {
+  background: linear-gradient(90deg, #7a6bd2, #b7a2ff, #e6d8ff);
+}
+
+.sala2-search-target {
+  border-color: rgba(233, 208, 146, 0.8) !important;
+  box-shadow: 0 0 20px rgba(233, 208, 146, 0.22) !important;
+}
+
+.sala2-event-message,
+.sala4-overlay,
+.forge-complete {
+  background: rgba(10, 10, 15, 0.82);
+  border: 1px solid rgba(205, 180, 125, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 18px 36px rgba(0, 0, 0, 0.34);
+}
+
+.sala2-beast,
+.sala4-arena-wrap,
+.forge-area {
+  border: 1px solid rgba(205, 180, 125, 0.16);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.35);
+}
+
+.sala2-part.active {
+  background: rgba(214, 184, 107, 0.22);
+  border-color: #efdca4;
+  box-shadow: 0 0 0 2px rgba(239, 220, 164, 0.25), 0 0 18px rgba(239, 220, 164, 0.32);
+}
+
+.sala2-part.hit {
+  background: rgba(168, 137, 217, 0.22);
+  border-color: #d8c7ff;
+  box-shadow: 0 0 0 2px rgba(216, 199, 255, 0.28), 0 0 18px rgba(216, 199, 255, 0.32);
+}
+
+.sala2-final-indicator {
+  border-color: rgba(239, 220, 164, 0.72);
+  color: #f2dfad;
+}
+
+/* Sala 3 */
+.forge-panel label,
+.forge-panel span,
+.forge-panel p {
+  color: #f2e5cf;
+}
+
+.forge-progress-bar {
+  height: 18px;
+  border-radius: 999px;
+}
+
+.forge-progress-fill {
+  border-radius: inherit;
+}
+
+.timing-bar {
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.hit-zone {
+  background: rgba(168, 136, 72, 0.28) !important;
+}
+
+.timing-indicator {
+  background: linear-gradient(180deg, #f6e7c3, #c8a45d) !important;
+  box-shadow: 0 0 14px rgba(224, 199, 142, 0.35);
+}
+
+.strike-button {
+  width: 100%;
+}
+
+.forge-complete input[type="submit"] {
+  background: linear-gradient(180deg, rgba(69, 57, 35, 0.98), rgba(25, 19, 12, 0.98));
+}
+
+/* Sala 4 */
+.sala4-scene {
+  max-width: 1060px;
+}
+
+.sala4-hud {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.7rem;
+}
+
+.sala4-bar-wrap {
+  width: min(520px, 100%);
+}
+
+.sala4-bar-wrap span {
+  display: block;
+  margin-bottom: 0.35rem;
+  color: #f5ebd8;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+}
+
+.sala4-bar {
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.sala4-wave {
+  min-width: 170px;
+  text-align: right;
+  color: #f5ebd8;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+}
+
+.sala4-controls {
+  text-align: center;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  color: #d9ceb9;
+}
+
+.sala4-arena-wrap {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  background: rgba(6, 6, 10, 0.92);
+}
+
+#radianceArena {
+  width: 100%;
+  display: block;
+  background: #08070b;
+}
+
+.sala4-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 0.9rem;
+  text-align: center;
+  padding: 1rem;
+}
+
+.sala4-status {
+  margin-top: 0.8rem;
+  text-align: center;
+  min-height: 1.8rem;
+  letter-spacing: 0.04em;
+}
+
+.sala4-victory {
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.sala4-victory p {
+  margin-bottom: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  main {
+    border-radius: 16px;
+    padding: 1.1rem;
+  }
+
+  #dialogContainer,
+  .sala2-combat,
+  .forge-container,
+  .sala4-hud {
+    flex-direction: column;
+  }
+
+  #dialogContainer > div:first-child {
+    width: 100%;
+    max-width: 220px;
+    margin: 0 auto;
+  }
+
+  .sala4-wave {
+    min-width: auto;
+    text-align: center;
+  }
+}
+
+.form-control,
+.form-select,
+textarea {
+  background: rgba(11, 18, 27, 0.85);
+  color: #edf7ff;
+  border: 1px solid rgba(131, 179, 255, 0.3);
+  box-shadow: inset 0 0 12px rgba(90, 122, 168, 0.08);
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus {
+  border-color: rgba(141, 209, 255, 0.75);
+  box-shadow: 0 0 0 0.2rem rgba(116, 170, 255, 0.25);
+}
+
+.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
+  color: var(--bs-secondary-color);
+  text-align: end;
+}
+
+.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+  text-align: start;
+}
+.index-body{
+  background-image: url('/Images/images.jfif'); background-size: cover; background-position: center; background-repeat: no-repeat;
+}
+
+.hollow-dialog {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.hollow-dialog.hidden {
+  display: none;
+}
+
+.hollow-dialog__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(3, 6, 10, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.hollow-dialog__panel {
+  position: relative;
+  width: min(720px, calc(100% - 32px));
+  background: linear-gradient(180deg, rgba(17, 22, 28, 0.96), rgba(8, 12, 17, 0.94));
+  border: 1px solid rgba(151, 195, 255, 0.35);
+  border-radius: 20px;
+  box-shadow: 0 0 35px rgba(98, 151, 255, 0.2), inset 0 0 28px rgba(90, 120, 150, 0.08);
+  padding: 1.5rem;
+  overflow: hidden;
+}
+
+.hollow-dialog__panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, rgba(255,255,255,0.04), rgba(255,255,255,0));
+  pointer-events: none;
+}
+
+.hollow-dialog__header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(150, 175, 210, 0.25);
+  padding-bottom: 1rem;
+  margin-bottom: 1rem;
+}
+
+.hollow-dialog__avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: #eaf7ff;
+  background: radial-gradient(circle at 35% 30%, #9fe3ff, #4f7bb0 28%, #1c2d44 75%);
+  border: 1px solid rgba(186, 221, 255, 0.6);
+  box-shadow: 0 0 18px rgba(120, 176, 255, 0.28);
+}
+
+.hollow-dialog__eyebrow {
+  display: block;
+  color: #8bd6c8;
+  font-size: 0.7rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.hollow-dialog__meta h3 {
+  margin: 0.18rem 0 0;
+  font-size: 1.4rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #edf7ff;
+}
+
+.hollow-dialog__body {
+  min-height: 110px;
+  display: flex;
+  align-items: center;
+}
+
+.hollow-dialog__body p {
+  margin: 0;
+  color: #edf7ff;
+  font-size: 1.08rem;
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 12px rgba(135, 172, 255, 0.12);
+}
+
+.hollow-dialog__choices {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1.25rem;
+}
+
+.hollow-dialog__choice {
+  border: 1px solid rgba(121, 175, 255, 0.5);
+  background: linear-gradient(135deg, rgba(29, 54, 79, 0.9), rgba(12, 21, 31, 0.9));
+  color: #edf7ff;
+  border-radius: 999px;
+  padding: 0.7rem 1.2rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.hollow-dialog__choice:hover {
+  transform: translateY(-1px);
+  border-color: rgba(173, 216, 255, 0.9);
+  box-shadow: 0 0 18px rgba(116, 170, 255, 0.26);
+}
+
+.sala2-scene {
+  max-width: 980px;
+  margin: 0 auto;
+}
+
+.sala2-intro {
+  font-size: 1.05rem;
+  line-height: 1.8;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  text-shadow: none;
+  margin-bottom: 2rem;
+}
+
+.sala2-combat {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.sala2-beast {
+  position: relative;
+  width: 100%;
+  min-height: 420px;
+  border-radius: 28px;
+  background: radial-gradient(circle at center, rgba(80, 95, 110, 0.3), rgba(12, 20, 28, 0.9) 65%);
+  border: 1px solid rgba(146, 181, 224, 0.25);
+  box-shadow: inset 0 0 26px rgba(118, 136, 175, 0.14);
+  overflow: hidden;
+}
+
+.sala2-beast::before {
+  content: "";
+  position: absolute;
+  inset: 20px 40px 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, rgba(255, 95, 95, 0.18), rgba(22, 18, 18, 0.2) 45%, transparent 78%);
+  opacity: 0.7;
+}
+
+.sala2-part {
+  position: absolute;
+  box-sizing: border-box;
+  transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+  opacity: 1;
+  pointer-events: none;
+  visibility: visible;
+}
+
+.sala2-part.active {
+  background: rgba(255, 214, 92, 0.22);
+  border-color: #ffe08a;
+  box-shadow: 0 0 0 2px rgba(255, 224, 138, 0.28), 0 0 18px rgba(255, 210, 90, 0.45);
+  pointer-events: auto;
+  z-index: 2;
+}
+
+.sala2-part.hit {
+  background: rgba(126, 255, 177, 0.28);
+  border-color: #8dffba;
+  box-shadow: 0 0 0 2px rgba(141, 255, 186, 0.35), 0 0 22px rgba(100, 255, 160, 0.55);
+}
+
+.sala2-final-indicator {
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 3;
+  max-width: calc(100% - 28px);
+  padding: 0.45rem 0.8rem;
+  transform: translateX(-50%) translateY(-8px);
+  border: 1px solid rgba(255, 224, 138, 0.9);
+  border-radius: 8px;
+  background: rgba(9, 16, 24, 0.78);
+  color: #ffe08a;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-align: center;
+  text-transform: uppercase;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.sala2-final-indicator.visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.sala2-part.final-escape-target {
+  animation: sala2-final-pulse 0.8s ease-in-out infinite alternate;
+}
+
+@keyframes sala2-final-pulse {
+  from {
+    box-shadow: 0 0 0 2px rgba(255, 224, 138, 0.35), 0 0 12px rgba(255, 210, 90, 0.45);
+  }
+  to {
+    box-shadow: 0 0 0 4px rgba(255, 224, 138, 0.7), 0 0 28px rgba(255, 210, 90, 0.85);
+  }
+}
+
+.sala2-event-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  background: rgba(3, 7, 12, 0.82);
+}
+
+.sala2-event-message {
+  position: absolute;
+  top: 12%;
+  left: 50%;
+  width: min(520px, calc(100% - 32px));
+  transform: translateX(-50%);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  background: rgba(10, 18, 28, 0.95);
+  border: 1px solid rgba(255, 224, 138, 0.75);
+  border-radius: 12px;
+  box-shadow: 0 0 28px rgba(255, 210, 90, 0.2);
+}
+
+.sala2-event-message h3,
+.sala2-event-message p {
+  margin: 0 0 0.5rem;
+}
+
+.sala2-event-message strong {
+  color: #ffe08a;
+  font-size: 1.2rem;
+}
+
+.sala2-search-target {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  transform: translate(-50%, -50%);
+  padding: 0;
+  border: 2px solid #ffe08a;
+  border-radius: 8px;
+  background: rgba(10, 18, 28, 0.9);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(255, 210, 90, 0.7);
+  overflow: hidden;
+}
+
+.sala2-search-target:hover {
+  transform: translate(-50%, -50%);
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.sala2-search-target img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sala2-panel {
+  background: rgba(10, 18, 28, 0.8);
+  border: 1px solid rgba(151, 198, 255, 0.28);
+  border-radius: 18px;
+  padding: 1.25rem;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.18);
+}
+
+.sala2-status {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.sala2-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.sala2-bar-wrap span {
+  width: 90px;
+  color: #edf7ff;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-shadow: 0 0 12px rgba(124, 176, 255, 0.2);
+}
+
+.sala2-bar {
+  position: relative;
+  flex: 1;
+  height: 16px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(155, 197, 255, 0.24);
+  overflow: hidden;
+}
+
+.sala2-fill {
+  height: 100%;
+  width: 100%;
+  border-radius: inherit;
+  transition: width 0.15s ease;
+}
+
+.sala2-fill.enemy {
+  background: linear-gradient(90deg, #ff5f5f, #a41717);
+}
+
+.sala2-fill.player {
+  background: linear-gradient(90deg, #68d3ff, #2e7ef1);
+}
+
+.sala2-status-text {
+  min-height: 66px;
+  padding: 0.8rem 0.9rem;
+  background: rgba(22, 32, 43, 0.6);
+  border: 1px solid rgba(122, 169, 218, 0.2);
+  border-radius: 12px;
+  color: #edf7ff;
+  line-height: 1.6;
+  margin-bottom: 1.2rem;
+}
+
+.sala2-button {
+  display: block;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.sala2-next-room {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(141, 170, 220, 0.25);
+}
+
+.sala2-next-room p {
+  text-transform: none;
+  letter-spacing: 0.02em;
+  line-height: 1.7;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+  .sala2-combat {
+    grid-template-columns: 1fr;
+  }
+
+  .part-left-arm {
+    left: 90px;
+  }
+
+  .part-right-arm {
+    right: 90px;
+  }
+
+  .part-left-leg {
+    left: 150px;
+  }
+
+  .part-right-leg {
+    right: 150px;
+  }
+}
+
+/* Estilos para la Forja */
+.forge-scene {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.forge-intro {
+  background: rgba(20, 25, 35, 0.6);
+  border: 1px solid rgba(150, 180, 220, 0.25);
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+  line-height: 1.8;
+  text-transform: none;
+  letter-spacing: 0.02em;
+}
+
+.forge-intro p {
+  margin: 0.8rem 0;
+  font-size: 1rem;
+}
+
+.forge-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+/* Area de la Forja */
+.forge-area {
+  position: relative;
+  width: 100%;
+  height: 450px;
+  background: radial-gradient(circle at center, rgba(80, 60, 30, 0.2), rgba(12, 20, 28, 0.95) 70%);
+  border-radius: 20px;
+  border: 2px solid rgba(200, 120, 60, 0.3);
+  box-shadow: 
+    inset 0 0 40px rgba(255, 100, 20, 0.1),
+    0 0 30px rgba(255, 100, 20, 0.15);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+.forge-fire {
+  position: absolute;
+  width: 100%;
+  height: 40%;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 30% 0%, rgba(255, 100, 20, 0.3), transparent 40%),
+    radial-gradient(circle at 70% 0%, rgba(255, 150, 20, 0.25), transparent 45%),
+    linear-gradient(180deg, rgba(255, 80, 0, 0.1), rgba(255, 20, 0, 0.05) 50%, transparent);
+  animation: fireFlicker 2s infinite alternate;
+}
+
+@keyframes fireFlicker {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 0.95; }
+}
+
+.forge-anvil {
+  position: relative;
+  z-index: 2;
+  width: 240px;
+  height: 140px;
+  background: linear-gradient(135deg, #2a2a2a 0%, #1a1a1a 50%, #3a3a3a 100%);
+  border-radius: 8px;
+  box-shadow: 
+    0 20px 30px rgba(0, 0, 0, 0.7),
+    inset 0 1px 0 rgba(80, 80, 80, 0.3),
+    inset 0 -2px 5px rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid rgba(100, 100, 100, 0.4);
+}
+
+.nail {
+  width: 120px;
+  height: 80px;
+  background: linear-gradient(90deg, #4a4a4a 0%, #6a6a6a 50%, #4a4a4a 100%);
+  border-radius: 4px 4px 8px 8px;
+  box-shadow: 
+    0 4px 10px rgba(0, 0, 0, 0.6),
+    inset 0 1px 0 rgba(150, 150, 150, 0.2);
+  position: relative;
+  transition: transform 0.05s ease;
+}
+
+.nail::before {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 12px;
+  background: linear-gradient(90deg, #3a3a3a, #5a5a5a, #3a3a3a);
+  border-radius: 2px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.nail.hammered {
+  animation: hammerHit 0.3s ease-out;
+  box-shadow: 
+    0 2px 8px rgba(200, 100, 0, 0.8),
+    inset 0 1px 0 rgba(200, 150, 100, 0.4);
+}
+
+@keyframes hammerHit {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.nail.failed {
+  animation: failHit 0.4s ease-out;
+}
+
+@keyframes failHit {
+  0% { transform: translateX(0); }
+  25% { transform: translateX(-8px); }
+  50% { transform: translateX(8px); }
+  75% { transform: translateX(-4px); }
+  100% { transform: translateX(0); }
+}
+
+.nail.perfected {
+  animation: perfectForge 0.8s ease-out;
+}
+
+@keyframes perfectForge {
+  0% { 
+    transform: scale(1); 
+    filter: brightness(1);
+  }
+  50% { 
+    transform: scale(1.1);
+    filter: brightness(1.4) drop-shadow(0 0 15px rgba(255, 180, 0, 0.8));
+  }
+  100% { 
+    transform: scale(1);
+    filter: brightness(1.2) drop-shadow(0 0 25px rgba(255, 200, 0, 0.6));
+  }
+}
+
+/* Panel de Control */
+.forge-panel {
+  background: rgba(10, 18, 28, 0.85);
+  border: 1px solid rgba(150, 180, 220, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+
+.forge-panel h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+.forge-status {
+  margin-bottom: 2.5rem;
+}
+
+.forge-progress-bar {
+  width: 100%;
+  height: 24px;
+  background: rgba(50, 50, 50, 0.8);
+  border-radius: 4px;
+  border: 1px solid rgba(120, 120, 120, 0.3);
+  overflow: hidden;
+  margin-bottom: 0.8rem;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.forge-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #4a9eff 0%, #71c9ff 50%, #40c4ff 100%);
+  box-shadow: 0 0 12px rgba(64, 196, 255, 0.6);
+  transition: width 0.3s ease;
+}
+
+#forgeProgressText {
+  display: block;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #a0d8ff;
+  text-shadow: 0 0 8px rgba(100, 180, 255, 0.3);
+}
+
+/* Barra de Timing */
+.timing-bar-container {
+  margin: 2rem 0;
+  padding: 1.5rem;
+  background: rgba(30, 40, 50, 0.6);
+  border-radius: 8px;
+  border: 1px solid rgba(100, 150, 200, 0.2);
+}
+
+.timing-bar-container label {
+  display: block;
+  margin-bottom: 0.8rem;
+  color: #b0d8ff;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.timing-bar {
+  position: relative;
+  width: 100%;
+  height: 40px;
+  background: linear-gradient(90deg, rgba(50, 50, 60, 0.9), rgba(40, 40, 50, 0.9));
+  border: 2px solid rgba(80, 100, 130, 0.5);
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.5);
+}
+
+.hit-zone {
+  position: absolute;
+  left: 35%;
+  width: 30%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(76, 255, 100, 0.15), 
+    rgba(100, 255, 120, 0.35) 50%, 
+    rgba(76, 255, 100, 0.15));
+  border-left: 2px solid rgba(100, 255, 120, 0.6);
+  border-right: 2px solid rgba(100, 255, 120, 0.6);
+  box-shadow: 
+    inset 0 0 10px rgba(100, 255, 120, 0.2),
+    0 0 12px rgba(100, 255, 120, 0.3);
+}
+
+.timing-indicator {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 4px;
+  height: 50%;
+  background: linear-gradient(90deg, #4a9eff, #71c9ff);
+  box-shadow: 0 0 12px rgba(74, 158, 255, 0.8);
+  border-radius: 2px;
+  z-index: 3;
+  transition: left 0.05s linear;
+}
+
+.timing-message {
+  text-align: center;
+  margin: 1rem 0 0 0;
+  font-size: 0.95rem;
+  color: #a0d8ff;
+  min-height: 22px;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.timing-message.success {
+  color: #4aff64;
+  text-shadow: 0 0 10px rgba(74, 255, 100, 0.6);
+}
+
+.timing-message.error {
+  color: #ff6b6b;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.6);
+}
+
+/* Botón de Golpe */
+.strike-button {
+  width: 100%;
+  padding: 1rem;
+  margin: 1.5rem 0;
+  background: linear-gradient(135deg, #4a7cff 0%, #2e5bdb 100%);
+  color: white;
+  border: 2px solid rgba(100, 150, 255, 0.5);
+  border-radius: 8px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: 
+    all 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.1s ease;
+  box-shadow: 0 6px 20px rgba(74, 124, 255, 0.3);
+}
+
+.strike-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #5a8cff 0%, #3e6beb 100%);
+  box-shadow: 0 8px 28px rgba(74, 124, 255, 0.5);
+  transform: translateY(-2px);
+}
+
+.strike-button:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(74, 124, 255, 0.4);
+}
+
+.strike-button:disabled,
+.strike-button.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #3a5cbe 0%, #1e3b8b 100%);
+  box-shadow: 0 4px 12px rgba(74, 124, 255, 0.15);
+}
+
+/* Estado de Forja */
+.forge-status-text {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(20, 30, 45, 0.7);
+  border-radius: 6px;
+  border-left: 3px solid #4a9eff;
+  color: #b0d8ff;
+  font-size: 0.95rem;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* Formulario de Completación */
+.forge-complete {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(30, 50, 30, 0.8);
+  border: 2px solid rgba(100, 255, 120, 0.4);
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(100, 255, 120, 0.2);
+  animation: completeAppear 0.5s ease-out;
+}
+
+@keyframes completeAppear {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.forge-complete p {
+  margin: 0.5rem 0;
+  color: #9fff9f;
+  text-shadow: 0 0 8px rgba(100, 255, 120, 0.3);
+}
+
+.forge-complete input[type="submit"] {
+  width: 100%;
+  padding: 0.8rem;
+  margin-top: 1rem;
+  background: linear-gradient(135deg, #4aff64 0%, #2db840 100%);
+  color: #0a1320;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 6px 20px rgba(74, 255, 100, 0.3);
+}
+
+.forge-complete input[type="submit"]:hover {
+  background: linear-gradient(135deg, #5aff74 0%, #3ec850 100%);
+  box-shadow: 0 8px 28px rgba(74, 255, 100, 0.5);
+  transform: translateY(-2px);
+}
+
+.forge-complete input[type="submit"]:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(74, 255, 100, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .forge-container {
+    grid-template-columns: 1fr;
+  }
+
+  .forge-area {
+    height: 350px;
+  }
+
+  .forge-intro {
+    font-size: 0.95rem;
+  }
+
+  .strike-button {
+    padding: 0.8rem;
+    font-size: 0.95rem;
+  }
+}

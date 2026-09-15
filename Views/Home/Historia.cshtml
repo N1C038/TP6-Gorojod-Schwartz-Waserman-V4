@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+@{
+    ViewData["Title"] = "Historia";
+}
+
+<div class="text-center">
+    <h2>Ingrese su sobrenombre.</h2>
+    <p>Un guerrero del vacío no debe tener nombre que lo ate al mundo.</p>
+
+    <form action='@Url.Action("iniciarPartida", "Home")' method="POST" enctype="multipart/form-data" class="mb-3">
+        <input type="text" id="username" name="username" class="form-control mb-3" placeholder="Tu nombre" required/>
+        <input type="submit" value="Comenzar" />
+    </form>
+
+    <button type="button" id="abrir-dialogo">Historia</button>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            HollowDialog.open({
+                speaker: 'Narrador',
+                avatar: 'N',
+                message: 'El reino de los sueños se desvanece a tu alrededor. Frente a ti se alza la sala de escape: sus desafíos pondrán a prueba tu ingenio y tu vínculo con el Vacío. Respira hondo y prepárate para entrar.',
+                choices: [{
+                    label: 'Enfrentar los desafíos',
+                    value: 'comenzar',
+                    action: () => document.getElementById('iniciar-partida').submit()
+                }]
+            });
+        });
+    </script>
+}
+</body>
+</html>
