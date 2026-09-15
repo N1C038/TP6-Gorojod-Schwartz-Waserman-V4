@@ -26,12 +26,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             HollowDialog.open({
-                speaker: 'Narrador',
-                avatar: 'N',
-                message: 'El reino de los sueños se desvanece a tu alrededor. Frente a ti se alza la sala de escape: sus desafíos pondrán a prueba tu ingenio y tu vínculo con el Vacío. Respira hondo y prepárate para entrar.',
+                speaker: 'Hornet',
+                avatar: 'Hornet.png',
+                message: 'Un poderoso dios de la luz está intentando tomar control de tu mente, debes evitarlo. Si lo logra, destruirá nuestro reino.',
                 choices: [{
-                    label: 'Enfrentar los desafíos',
-                    value: 'comenzar',
+                    label: 'Continuar',
+                    value: 'Continuar',
                     action: () => document.getElementById('iniciar-partida').submit()
                 }]
             });

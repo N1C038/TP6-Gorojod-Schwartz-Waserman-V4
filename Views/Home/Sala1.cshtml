@@ -15,39 +15,33 @@
     }
 
     <p>
-        El primer portal se abre ante ti. Responde las tres preguntas para ganar la confianza de los guardianes.
+        Llegas a la casa de los 3 maestros del combate en son de obtener de ellos un arma con la cual combatir.
+    </p> </br>
+    <p>
+        Los hermanos acceden, pero para asegurarse de que seas digno, te hacen una serie de preguntas para probarte. Responde correctamente para ganar su confianza.
     </p>
 
-    @if (Model?.Preguntas == null || Model.Preguntas.Count == 0)
-    {
-        <div class="alert alert-warning mt-3">No hay preguntas cargadas para la sala 1.</div>
-    }
-    else
-    {
-        <form method="post" action="@Url.Action("ValidarSala1", "Home")" id="quizForm" class="mx-auto" style="max-width:800px;">
-            <div id="dialogContainer" style="display:flex;gap:16px;align-items:flex-start;">
-                <div style="width:140px;">
-                    <img id="charImage" src="/Images/Oro.png" alt="Personaje" style="width:100%;border-radius:8px;border:2px solid #333;" />
-                    <div id="charName" style="margin-top:8px;font-weight:600;text-align:center;">Oro</div>
+    <form method="post" action="@Url.Action("ValidarSala1", "Home")" id="quizForm" class="mx-auto" style="max-width:800px;">
+        <div id="dialogContainer" style="display:flex;gap:16px;align-items:flex-start;">
+            <div style="width:140px;">
+                <img id="charImage" src="/Images/Oro.png" alt="Personaje" style="width:100%;border-radius:8px;border:2px solid #333;" />
+                <div id="charName" style="margin-top:8px;font-weight:600;text-align:center;">Oro</div>
+            </div>
+
+            <div style="flex:1;text-align:left;">
+                <div id="dialogBox" style="background:#fff;border:2px solid #444;padding:12px;border-radius:8px;min-height:72px;">
+                    <div id="dialogText" style="font-size:16px;color:#111;"></div>
                 </div>
 
-                <div style="flex:1;text-align:left;">
-                    <div id="dialogBox" style="background:#fff;border:2px solid #444;padding:12px;border-radius:8px;min-height:72px;">
-                        <div id="dialogText" style="font-size:16px;color:#111;"></div>
-                    </div>
-
-                    <div id="optionsArea" style="margin-top:12px;display:none;"></div>
-
-                    <div id="feedbackArea" style="margin-top:8px;min-height:24px;"></div>
-
-                    <div style="margin-top:12px;">
-                        <button type="button" id="nextBtn" class="btn btn-primary" style="display:none;">Siguiente</button>
-                        <button type="submit" id="submitBtn" class="btn btn-success" style="display:none;">Enviar respuestas</button>
-                    </div>
+                <div id="optionsArea" style="margin-top:12px;display:none;"></div>
+                <div id="feedbackArea" style="margin-top:8px;min-height:24px;"></div>
+                <div style="margin-top:12px;">
+                    <button type="button" id="nextBtn" class="btn btn-primary" style="display:none;">Siguiente</button>
+                    <button type="submit" id="submitBtn" class="btn btn-success" style="display:none;">Confirmar Respuestas</button>
                 </div>
             </div>
-        </form>
-    }
+        </div>
+    </form>
 </div>
 
 <div id="nailOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:10000;">
@@ -56,8 +50,8 @@
             <img src="/Images/Aguijon-Roto.png" alt="Aguijón Roto" style="width:100%;border-radius:8px;border:2px solid #333;" />
         </div>
         <div style="flex:1;">
-            <h3 style="margin:0 0 6px 0;">Has obtenido el Aguijón Roto</h3>
-            <p id="nailDialogText" style="margin:0 0 6px 0;">Te han entregado el aguijón roto. Te ayudará en lo que viene.</p>
+            <h3 style="margin:0 0 6px 0;">Has obtenido el renombrado Aguijón</h3>
+            <p id="nailDialogText" style="margin:0 0 6px 0;">Los maestros te han entregado el aguijón. Te ayudará en un futuro no tan lejano, pero de todas maneras, deberás aprender a usarlo.</p>
             <div style="margin-top:12px;">
                 <button id="nailContinueBtn" class="btn btn-primary">Continuar</button>
             </div>

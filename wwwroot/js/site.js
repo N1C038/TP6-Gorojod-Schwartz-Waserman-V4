@@ -33,7 +33,7 @@ const HollowDialog = (() => {
         dialog.classList.add('hidden');
         dialog.setAttribute('aria-hidden', 'true');
         textEl.textContent = '';
-        titleEl.textContent = 'NARRADOR';
+        titleEl.textContent = 'Hornet';
         avatarEl.textContent = 'N';
         choicesEl.innerHTML = '';
     }
@@ -75,16 +75,11 @@ const HollowDialog = (() => {
     }
 
     function show({
-        speaker = 'NARRADOR',
+        speaker = 'Hornet',
         avatar = speaker.charAt(0).toUpperCase(),
         message = '',
         choices = []
     }) {
-        if (!ensureElements()) {
-            console.warn('HollowDialog: no se encontró el diálogo en el DOM.');
-            return;
-        }
-
         dialog.classList.remove('hidden');
         dialog.setAttribute('aria-hidden', 'false');
         titleEl.textContent = speaker.toUpperCase();
@@ -96,7 +91,7 @@ const HollowDialog = (() => {
     }
 
     function open({
-        speaker = 'NARRADOR',
+        speaker = 'Hornet',
         avatar = speaker.charAt(0).toUpperCase(),
         message = '',
         choices = []

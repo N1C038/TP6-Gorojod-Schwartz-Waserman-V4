@@ -22,9 +22,8 @@
         }
 
         <p class="sala2-intro">
-            Te adentras en la segunda cámara y descubres a un guerrero enorme, imponente, con la figura de <strong>El gran Zote</strong>.
-            Al acercarte, notas que su mirada es demasiado fría y que sus movimientos se vuelven animalescos.
-            No es Zote: es <strong>Nosk</strong>, una bestia cazadora que se mimetiza para atraer a sus víctimas.
+            Te adentras en las cavernas donde habita un legendario cazador del que has escuchado hace tiempo, para que te enseñe a usar tu nueva adquisicion. 
+            Hasta que llegas y descubres a un guerrero enorme, imponente, con la figura de <strong>El gran Zote</strong>.
         </p>
         <div class="sala2-combat">
             <div id="prebattleOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;">
@@ -34,7 +33,10 @@
                     </div>
                     <div style="flex:1;">
                         <h3 style="margin:0 0 6px 0;">Zote parece extraño...</h3>
-                        <p style="margin:0 0 6px 0;">Lo observas y notas que su comportamiento no es el habitual. Algo no está bien...</p>
+                        <p style="margin:0 0 6px 0;">
+                        Al acercarte, notas que su mirada es demasiado fría y que sus movimientos se vuelven animalescos.
+                        No es Zote: es <strong>Nosk</strong>, una bestia cazadora que se mimetiza para atraer a sus víctimas.
+                        Lo observas y notas que su comportamiento no es el habitual. Algo no está bien...</p>
                         <div style="margin-top:8px;font-size:13px;opacity:0.9;">Presioná "Empezar combate" cuando estés listo.</div>
                         <div style="margin-top:12px;">
                             <button id="startCombatBtn" class="btn btn-danger">Empezar combate</button>
@@ -62,7 +64,8 @@
                     </div>
                     <div style="flex:1;">
                         <h3 style="margin:0 0 6px 0;">Zote</h3>
-                        <p id="zoteDialogText" style="margin:0 0 6px 0;">El verdadero Zote aparece entre el humo y te dirige unas palabras.</p>
+                        <p id="zoteDialogText" style="margin:0 0 6px 0;">El verdadero Zote aparece entre el humo y te reprocha porque supuestamente "Estaba todo bajo control." 
+                        De todas formas, el combate te sirvio como entrenamiento.</p>
                         <div style="margin-top:12px;">
                             <button id="zoteContinueBtn" class="btn btn-primary">Continuar</button>
                         </div>
@@ -72,8 +75,8 @@
 
             <div id="searchOverlay" class="sala2-event-overlay" style="display:none;">
                 <div class="sala2-event-message">
-                    <h3>¡Nosk escapa!</h3>
-                    <p>Se ha ocultado en algún lugar de la sala. Encuéntralo haciendo clic sobre su rastro.</p>
+                    <h3>¡Nosk intenta escapar!</h3>
+                    <p>Se ha ocultado en algún lugar de la sala. Encuéntralo haciendo clic sobre su rastro para acorralarlo.</p>
                 </div>
                 <button id="searchTarget" class="sala2-search-target" type="button" aria-label="Encontrar a Nosk">
                     <img src="/Images/zoteNosk 2.png" alt="ZoteNosk" />
@@ -82,7 +85,7 @@
 
             <div class="sala2-beast" aria-label="Enemigo Nosk" style="position:relative;max-width:600px;margin:0 auto;">
             <img src="/Images/zoteNosk 2.png" alt="Nosk" style="width:100%;display:block;border-radius:6px;" />
-            <div id="finalEscapeIndicator" class="sala2-final-indicator" aria-live="polite">¡Nosk intenta escapar! Golpea su cuerpo</div>
+            <div id="finalEscapeIndicator" class="sala2-final-indicator" aria-live="polite">¡Nosk esta perdiendo y intenta defenderse! Golpea su cuerpo rapidamente de forma repetitiva para derrotarlo!</div>
             <div class="sala2-part part-left-wing" data-part="ala izquierda" style="position:absolute;left:22%;top:4%;width:30%;height:47%;"></div>
             <div class="sala2-part part-right-wing" data-part="ala derecha" style="position:absolute;left:45%;top:6%;width:29%;height:45%;"></div>
             <div class="sala2-part part-body" data-part="cuerpo" style="position:absolute;left:39%;top:44%;width:26%;height:24%;"></div>
