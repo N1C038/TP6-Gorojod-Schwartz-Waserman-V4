@@ -6,9 +6,19 @@
     <div class="text-center">
         <h1 class="display-4">La eterna disputa entre la luz y el vacío</h1>
         <p>Un ser imponente está intentando tomar control de tu mente. Derrotalo y salva al reino como puedas.</p>
-        <form action='@Url.Action("Historia", "Home")' method="GET">
+        <form action='@Url.Action("Historia", "Home", new { showDialog = 1 })' method="GET">
             <input type="submit" value="Comenzar">
         </form>
         <a href='@Url.Action("Integrantes", "Home")'>Ver integrantes del proyecto</a>
     </div>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const form = document.querySelector('form[action*="Historia"]');
+        if (form) {
+            form.addEventListener('submit', () => {
+                try { localStorage.setItem('showHornetDialog', '1'); } catch (e) {}
+            });
+        }
+    });
+</script>

@@ -23,18 +23,117 @@
 </div>
 
 @section Scripts {
+    <style>
+        #hornet-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 3000;
+        }
+        #hornet-dialog {
+            background: rgba(0,0,0,0.95);
+            color: #fff;
+            padding: 18px;
+            border-radius: 10px;
+            max-width: 820px;
+            width: calc(100% - 40px);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        #hornet-dialog img { width: 140px; height: 140px; object-fit: contain; border-radius: 8px; }
+        #hornet-dialog .dialog-content { flex: 1; }
+        #hornet-dialog .dialog-actions { text-align: right; margin-top: 8px; }
+        #hornet-dialog .dialog-message { margin: 0; }
+    </style>
+
+    <div id="hornet-backdrop">
+        <div id="hornet-dialog" role="dialog" aria-modal="true">
+            <img id="hornet-avatar" src="" alt="Hornet" />
+            <div class="dialog-content">
+                <h5 id="hornet-speaker">Hornet</h5>
+                <p id="hornet-message" class="dialog-message"></p>
+                <div class="dialog-actions">
+                    <button id="dialog-continuar" class="btn btn-primary">Continuar</button>
+                    <button id="dialog-close" class="btn btn-secondary">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            HollowDialog.open({
-                speaker: 'Hornet',
-                avatar: 'Hornet.png',
-                message: 'Un poderoso dios de la luz está intentando tomar control de tu mente, debes evitarlo. Si lo logra, destruirá nuestro reino.',
-                choices: [{
-                    label: 'Continuar',
-                    value: 'Continuar',
-                    action: () => document.getElementById('iniciar-partida').submit()
-                }]
+            const hornetUrl = '@Url.Content("~/Images/Hornet .png")';
+            const dialogs = [
+                'Un poderoso dios de la luz está intentando tomar control de tu mente. Debes evitarlo.',
+                'Si lo logra, destruirá nuestro reino. Necesitamos que te mantengas firme, eres la ultima esperanza.',
+                'Todavia no eres lo suficientemente fuerte como para enfrentarlo, pero es parte de tu mision estarlo.',
+                'Tendrás 3 sellos que te protegeran de la amenaza, al sufrir daños perderas uno de ellos, si quedas desprotegido, estaras vulnerable y tu mente sera consumida.',
+                'Cuando estés listo, comienza tu viaje. Buena suerte, guerrero del vacío.'
+            ];
+
+            let idx = 0;
+            const backdropEl = document.getElementById('hornet-backdrop');
+            const dialogEl = document.getElementById('hornet-dialog');
+            const avatarEl = document.getElementById('hornet-avatar');
+            const messageEl = document.getElementById('hornet-message');
+            const abrirBtn = document.getElementById('abrir-dialogo');
+            const contBtn = document.getElementById('dialog-continuar');
+            const closeBtn = document.getElementById('dialog-close');
+
+            // Ensure URL is encoded for spaces
+            const safeHornetUrl = encodeURI(hornetUrl);
+            avatarEl.src = safeHornetUrl;
+
+            function showDialog() {
+                messageEl.textContent = dialogs[idx];
+                backdropEl.style.display = 'flex';
+                dialogEl.style.display = 'flex';
+                contBtn.textContent = (idx < dialogs.length - 1) ? 'Continuar' : 'Finalizar';
+            }
+
+            function hideDialog() {
+                backdropEl.style.display = 'none';
+                dialogEl.style.display = 'none';
+            }
+
+            function nextDialog() {
+                if (idx < dialogs.length - 1) {
+                    idx++;
+                    showDialog();
+                } else {
+                    hideDialog();
+                }
+            }
+
+            abrirBtn.addEventListener('click', () => {
+                idx = 0;
+                showDialog();
             });
+
+            contBtn.addEventListener('click', nextDialog);
+            closeBtn.addEventListener('click', hideDialog);
+
+            backdropEl.addEventListener('click', (ev) => { if (ev.target === backdropEl) hideDialog(); });
+
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('showDialog') === '1') {
+                idx = 0;
+                showDialog();
+                return;
+            }
+
+            // fallback: si venimos de Index y se marcó mostrar diálogo en localStorage
+            try {
+                if (localStorage.getItem('showHornetDialog') === '1') {
+                    localStorage.removeItem('showHornetDialog');
+                    idx = 0;
+                    showDialog();
+                }
+            } catch (e) { }
         });
     </script>
 }

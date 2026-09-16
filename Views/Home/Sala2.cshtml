@@ -8,35 +8,49 @@
 <body>
     @{
         ViewData["Title"] = "Sala 2";
-        var mensaje = TempData["Sala2Mensaje"] as string;
     }
 
     <div class="sala2-scene">
         <div class="text-center mb-4">
             <h2>Sala 2: La bestia que imita a Zote</h2>
         </div>
-
-        @if (!string.IsNullOrWhiteSpace(mensaje))
-        {
-            <div class="alert alert-info mt-3">@mensaje</div>
-        }
-
         <p class="sala2-intro">
-            Te adentras en las cavernas donde habita un legendario cazador del que has escuchado hace tiempo, para que te enseñe a usar tu nueva adquisicion. 
-            Hasta que llegas y descubres a un guerrero enorme, imponente, con la figura de <strong>El gran Zote</strong>.
+            Clickea sobre las partes del cuerpo de Nosk cuando se iluminan para atacarlo!. </br>
+            Cuidado con golpear erroneamente, eso te dejara expuesto! 
+            No tienes mucho tiempo. La bestia se descontrola.  
         </p>
         <div class="sala2-combat">
-            <div id="prebattleOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;z-index:9999;">
+            <!-- Intro overlay -->
+            <div id="introOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.9);display:flex;align-items:center;justify-content:center;z-index:9998;">
                 <div style="background:#111;color:#fff;padding:18px;border-radius:10px;display:flex;gap:16px;align-items:center;max-width:900px;width:90%;">
                     <div style="width:200px;flex:0 0 200px;">
-                        <img src="/Images/zoteNosk.png" alt="Zote extraño" style="width:100%;border-radius:8px;border:2px solid #333;" />
+                        <img src="/Images/Zote.png" alt="Zote" style="width:100%;border-radius:8px;border:2px solid #333;" />
+                    </div>
+                    <div style="flex:1;">
+                        <h3 style="margin:0 0 6px 0;">El gran Zote</h3>
+                        <p style="margin:0 0 6px 0;">
+                            Te adentras en las cavernas donde habita un legendario cazador del que has escuchado hace tiempo, para que te enseñe a usar tu nueva adquisicion. 
+                            Finalmente descubres a un guerrero enorme, imponente, con la figura de <strong>El gran Zote</strong>.
+                        </p>
+                        <div style="margin-top:12px;">
+                            <button id="introContinueBtn" class="btn btn-primary">Acercarse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="prebattleOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:9999;">
+                <div style="background:#111;color:#fff;padding:18px;border-radius:10px;display:flex;gap:16px;align-items:center;max-width:900px;width:90%;">
+                    <div style="width:200px;flex:0 0 200px;">
+                        <img src="/Images/Zote.png" alt="Zote extraño" style="width:100%;border-radius:8px;border:2px solid #333;" />
                     </div>
                     <div style="flex:1;">
                         <h3 style="margin:0 0 6px 0;">Zote parece extraño...</h3>
                         <p style="margin:0 0 6px 0;">
-                        Al acercarte, notas que su mirada es demasiado fría y que sus movimientos se vuelven animalescos.
-                        No es Zote: es <strong>Nosk</strong>, una bestia cazadora que se mimetiza para atraer a sus víctimas.
-                        Lo observas y notas que su comportamiento no es el habitual. Algo no está bien...</p>
+                        Lo observas y notas que su comportamiento no es el habitual. Algo no está bien... </br>
+                        Al acercarte, notas que su mirada es demasiado fría, y sus movimientos se tornan bruscos. </br>
+                        No es Zote: es... <strong>Nosk</strong>, una bestia cazadora que se mimetiza para atraer a sus víctimas.
+                        </p>
                         <div style="margin-top:8px;font-size:13px;opacity:0.9;">Presioná "Empezar combate" cuando estés listo.</div>
                         <div style="margin-top:12px;">
                             <button id="startCombatBtn" class="btn btn-danger">Empezar combate</button>
@@ -49,7 +63,7 @@
             <div id="defeatOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:10000;">
                 <div style="background:#111;color:#fff;padding:18px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:500px;width:90%;">
                     <h3 style="margin:0 0 12px 0;color:#ff4444;">¡DERROTA!</h3>
-                    <p style="margin:0 0 16px 0;text-align:center;">La bestia te ha derribado. La caza termina contigo...</p>
+                    <p style="margin:0 0 16px 0;text-align:center;">La bestia te ha derribado. La caza termina contigo, y pierdes uno de tus sellos.</p>
                     <div style="margin-top:12px;">
                         <button id="retryBtn" class="btn btn-danger">Reintentar Sala</button>
                     </div>
@@ -60,12 +74,12 @@
             <div id="zoteOverlay" style="position:fixed;inset:0;background:rgba(0,0,0,0.85);display:none;align-items:center;justify-content:center;z-index:10000;">
                 <div style="background:#111;color:#fff;padding:18px;border-radius:10px;display:flex;gap:16px;align-items:center;max-width:900px;width:90%;">
                     <div style="width:200px;flex:0 0 200px;">
-                        <img src="/Images/Zote.png" alt="Zote" style="width:100%;border-radius:8px;border:2px solid #333;" />
+                        <img src="/Images/zoteNosk.png" alt="Zote" style="width:100%;border-radius:8px;border:2px solid #333;" />
                     </div>
                     <div style="flex:1;">
                         <h3 style="margin:0 0 6px 0;">Zote</h3>
-                        <p id="zoteDialogText" style="margin:0 0 6px 0;">El verdadero Zote aparece entre el humo y te reprocha porque supuestamente "Estaba todo bajo control." 
-                        De todas formas, el combate te sirvio como entrenamiento.</p>
+                        <p id="zoteDialogText" style="margin:0 0 6px 0;">El verdadero Zote aparece entre el humo y te reprocha porque supuestamente "Estaba todo bajo control." </br>
+                        De todas formas, el combate fue util como entrenamiento.</p>
                         <div style="margin-top:12px;">
                             <button id="zoteContinueBtn" class="btn btn-primary">Continuar</button>
                         </div>
@@ -118,7 +132,6 @@
                 </div>
 
                 <div id="nextRoomForm" class="sala2-next-room" style="display: none;">
-                    <p>¡Nosk cae! Del humo surge el verdadero Zote, quien te entrega el poder de moverte con más rapidez y fuerza.</p>
                     <form action='@Url.Action("pasarSala", "Home", new { IdSala = 2 })' method="POST">
                         <input type="submit" value="Entrar a la Sala 3" />
                     </form>
@@ -138,7 +151,11 @@
         const searchOverlay = document.getElementById('searchOverlay');
         const searchTarget = document.getElementById('searchTarget');
         const bodyPart = document.querySelector('.part-body');
+        const beastArea = document.querySelector('.sala2-beast');
         const finalEscapeIndicator = document.getElementById('finalEscapeIndicator');
+        const introOverlay = document.getElementById('introOverlay');
+        const introContinueBtn = document.getElementById('introContinueBtn');
+        const prebattleOverlay = document.getElementById('prebattleOverlay');
 
         let enemyHp = 100;
         let playerHp = 100;
@@ -151,8 +168,85 @@
         let finalClicks = 0;
         let lastFinalClick = 0;
         let normalAttackCount = 0;
+        let attackWindowDuration = 1500;
+        let searchPhaseTimeout = null;
+        const searchTimeLimitMs = 7000;
         const searchFindsRequired = 3;
         let searchFinds = 0;
+
+        function updatePlayerHp(amount) {
+            playerHp = Math.max(0, playerHp - amount);
+            playerHpBar.style.width = playerHp + '%';
+        }
+
+        function scheduleNextEnemyAttack(delay = 300) {
+            window.clearTimeout(nextAttackTimeout);
+            nextAttackTimeout = window.setTimeout(triggerEnemyAttack, delay);
+        }
+
+        function endPlayerRun(message) {
+            combatStatus.textContent = message;
+            parts.forEach(part => {
+                part.style.pointerEvents = 'none';
+            });
+            setTimeout(() => defeatOverlay.style.display = 'flex', 1800);
+        }
+
+        function handleMissedAttack(message) {
+            if (victory) return;
+
+            if (combatPhase === 'normal') {
+                if (!attackWindowOpen) return;
+
+                attackWindowOpen = false;
+                if (activePart) {
+                    activePart.classList.remove('active');
+                    activePart = null;
+                }
+                updatePlayerHp(10);
+                combatStatus.textContent = message || 'Fallaste el golpe. Nosk aprovecha la oportunidad.';
+
+                if (playerHp <= 0) {
+                    endPlayerRun('La caza termina contigo. Inténtalo de nuevo.');
+                    return;
+                }
+
+                scheduleNextEnemyAttack(500);
+                return;
+            }
+
+            if (combatPhase === 'finalEscape') {
+                updatePlayerHp(10);
+                combatStatus.textContent = message || 'Nosk castiga tu error durante la huida.';
+
+                if (playerHp <= 0) {
+                    endPlayerRun('No lograste reaccionar a tiempo. Nosk te alcanza.');
+                }
+            }
+        }
+
+        function clearSearchTimer() {
+            window.clearTimeout(searchPhaseTimeout);
+            searchPhaseTimeout = null;
+        }
+
+        function startSearchTimer() {
+            clearSearchTimer();
+            searchPhaseTimeout = window.setTimeout(() => {
+                if (victory || combatPhase !== 'search') return;
+
+                updatePlayerHp(12);
+                if (playerHp <= 0) {
+                    endPlayerRun('No lograste seguir el rastro a tiempo. La bestia te alcanza.');
+                    return;
+                }
+
+                searchFinds = 0;
+                moveSearchTarget();
+                combatStatus.textContent = 'Perdiste el rastro a tiempo. Nosk se mueve otra vez...';
+                startSearchTimer();
+            }, searchTimeLimitMs);
+        }
 
         function finishVictory() {
             victory = true;
@@ -161,6 +255,7 @@
             enemyHpBar.style.width = '0%';
             window.clearTimeout(activeTimeout);
             window.clearTimeout(nextAttackTimeout);
+            clearSearchTimer();
             resetParts();
             bodyPart.style.pointerEvents = 'none';
             finalEscapeIndicator.classList.remove('visible');
@@ -210,10 +305,12 @@
             activePart = null;
             resetParts();
             window.clearTimeout(activeTimeout);
+            window.clearTimeout(nextAttackTimeout);
             searchFinds = 0;
             moveSearchTarget();
             searchOverlay.style.display = 'block';
             combatStatus.textContent = 'Nosk escapó. Encuentra su rastro para continuar la pelea.';
+            startSearchTimer();
         }
 
         function moveSearchTarget() {
@@ -239,26 +336,21 @@
             activeTimeout = window.setTimeout(() => {
             if (!victory && attackWindowOpen) {
                 attackWindowOpen = false;
-                activePart.classList.remove('active');
-                activePart = null;
-                playerHp = Math.max(0, playerHp - 12);
-                playerHpBar.style.width = playerHp + '%';
+                if (activePart) {
+                    activePart.classList.remove('active');
+                    activePart = null;
+                }
+                updatePlayerHp(12);
                 combatStatus.textContent = 'Nosk contraataca. ¡No dejes que te alcance!';
 
                     if (playerHp <= 0) {
-                        combatStatus.textContent = 'Te derriba la bestia. Inténtalo otra vez.';
-                        parts.forEach(part => {
-                        part.style.pointerEvents = 'none';
-                        });
-                        setTimeout(() => defeatOverlay.style.display = 'flex', 1800);
+                        endPlayerRun('Te derriba la bestia. Inténtalo otra vez.');
+                        return;
                     }
 
-                    if (playerHp > 0) {
-                        window.clearTimeout(nextAttackTimeout);
-                        nextAttackTimeout = window.setTimeout(triggerEnemyAttack, 300);
-                    }
+                    scheduleNextEnemyAttack(300);
                 }
-            }, 1500);
+            }, attackWindowDuration);
         }
 
         function doAttack(selectedPart) {
@@ -273,6 +365,7 @@
                 selectedPart.classList.add('hit');
                 attackWindowOpen = false;
                 combatStatus.textContent = '¡Impacto directo! La ferocidad de Nosk empieza a ceder.';
+                attackWindowDuration = Math.max(850, attackWindowDuration - 500);
 
                 if (enemyHp <= 0) {
                     finishVictory();
@@ -281,19 +374,10 @@
                 } else if (enemyHp === 10) {
                     startFinalEscape();
                 } else {
-                    window.clearTimeout(nextAttackTimeout);
-                    nextAttackTimeout = window.setTimeout(triggerEnemyAttack, 300);
+                    scheduleNextEnemyAttack(300);
                 }
             } else {
-                playerHp = Math.max(0, playerHp - 10);
-                playerHpBar.style.width = playerHp + '%';
-                combatStatus.textContent = 'Fallaste el golpe. Nosk aprovecha la oportunidad.';
-
-                if (playerHp <= 0) {
-                    combatStatus.textContent = 'La caza termina contigo. Inténtalo de nuevo.';
-                    parts.forEach(part => part.style.pointerEvents = 'none');
-                    setTimeout(() => defeatOverlay.style.display = 'flex', 1800);
-                }
+                handleMissedAttack('Fallaste el golpe. Nosk aprovecha la oportunidad.');
             }
         }
 
@@ -304,10 +388,35 @@
         function startCombat() {
         parts.forEach(part => {
             part.style.pointerEvents = '';
-            part.addEventListener('click', () => doAttack(part));
+            part.addEventListener('click', () => {
+                if (combatPhase === 'finalEscape') {
+                    if (part === bodyPart) {
+                        handleFinalEscapeClick();
+                    } else {
+                        handleMissedAttack('¡Golpe errado! Nosk te castiga por perder precisión.');
+                    }
+                    return;
+                }
+
+                doAttack(part);
+            });
         });
         triggerEnemyAttack();
     }
+
+        if (beastArea) {
+            beastArea.addEventListener('click', (event) => {
+                if (event.target.closest('.sala2-part')) {
+                    return;
+                }
+
+                if (combatPhase === 'normal') {
+                    handleMissedAttack('Golpeaste fuera de la hitbox. Nosk aprovecha la apertura.');
+                } else if (combatPhase === 'finalEscape') {
+                    handleMissedAttack('Erraste el cuerpo de Nosk. Su embestida te alcanza.');
+                }
+            });
+        }
 
         searchTarget.addEventListener('click', () => {
             if (combatPhase !== 'search') return;
@@ -319,13 +428,12 @@
                 return;
             }
 
+            clearSearchTimer();
             searchOverlay.style.display = 'none';
             combatPhase = 'normal';
             combatStatus.textContent = '¡Encontraste a Nosk! Prepárate para seguir atacando.';
-            nextAttackTimeout = window.setTimeout(triggerEnemyAttack, 500);
+            scheduleNextEnemyAttack(500);
         });
-
-        bodyPart.addEventListener('click', handleFinalEscapeClick);
 
         // Start combat when user clicks the start button in the overlay
         const prebattle = document.getElementById('prebattleOverlay');
@@ -357,6 +465,13 @@
         // Retry button event
         if(retryBtn){
             retryBtn.addEventListener('click', () => location.reload());
+        }
+
+        if (introContinueBtn) {
+            introContinueBtn.addEventListener('click', () => {
+                if (introOverlay) introOverlay.style.display = 'none';
+                if (prebattleOverlay) prebattleOverlay.style.display = 'flex';
+            });
         }
         </script>
     </body>
