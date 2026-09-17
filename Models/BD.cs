@@ -4,7 +4,7 @@ using Microsoft.Data.SqlClient;
 namespace TP6_Gorojod_Schwartz_Waserman.Models;
 
 public class BD {
-    private string connectionString = @"Server=localhost\SQLEXPRESS;Database=BaseSala;Trusted_Connection=True;TrustServerCertificate=True;"
+    private string connectionString = @"Server=localhost;Database=BaseSala;Trusted_Connection=True;TrustServerCertificate=True;"
 ;
 
     public int crearPartida(Partida partida)
@@ -27,6 +27,12 @@ public class BD {
                                    WHERE Id = @partidaId;
                                    SELECT Vidas FROM Partida WHERE Id = @partidaId;";
             return connection.ExecuteScalar<int>(query, new { partidaId });
+        }
+    }
+
+    public void perderPartida(int Vidas) {
+        using (SqlConnection connection = new SqlConnection(connectionString)) {
+            string query = @"DELETE * FROM Partida WHERE Vidas = 0;";
         }
     }
     

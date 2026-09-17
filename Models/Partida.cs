@@ -12,4 +12,8 @@ public class Partida {
     public Partida(){
         
     }
+
+    public int getVidas(){
+        return Vidas;
+    }
 }

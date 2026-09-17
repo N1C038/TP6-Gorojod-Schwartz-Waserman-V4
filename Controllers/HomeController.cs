@@ -27,6 +27,9 @@ public class HomeController : Controller
                 HttpContext.Session.SetString("PartidaId", partida.Id.ToString());
                 return RedirectToAction("Sala", new { IdSala = partida.IdSala });
             }
+            if (partida.getVidas() == 0) {
+                bd.perderPartida(partida.getVidas());
+            }
         }
 
         Partida nPartida = new Partida()
