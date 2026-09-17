@@ -24,6 +24,18 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                     </ul>
+                    @if (ViewBag.Vidas is int vidas)
+                    {
+                        <div class="dreamer-lives" aria-label="Vidas disponibles: @vidas de 3">
+                            <span class="dreamer-lives-label">Vidas</span>
+                            <div class="dreamer-seals" role="img" aria-label="@vidas de 3 sellos activos">
+                                <img class="dreamer-seal @(vidas < 1 ? "dreamer-seal-off" : "")" src="~/Images/Monomon.png" alt="Monomon" />
+                                <img class="dreamer-seal dreamer-seal-center @(vidas < 2 ? "dreamer-seal-off" : "")" src="~/Images/Lurien.png" alt="Lurien" />
+                                <img class="dreamer-seal @(vidas < 3 ? "dreamer-seal-off" : "")" src="~/Images/Herrah.png" alt="Herrah" />
+                            </div>
+                            <span class="visually-hidden">@vidas de 3 disponibles</span>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>

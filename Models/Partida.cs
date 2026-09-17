@@ -7,6 +7,7 @@ public class Partida {
     public int IdSala {get;set;}
     public string estadoActual {get;set;}
     public string nombreJugador {get;set;}
+    public int Vidas { get; set; }
 
     public Partida(){
         

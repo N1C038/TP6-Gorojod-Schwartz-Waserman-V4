@@ -144,6 +144,14 @@
     let activeTimeout = null;
     let activePart = null;
 
+    function loseLife() {
+        fetch('@Url.Action("PerderVida", "Home")', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'IdSala=2'
+        }).then(response => window.location.href = response.url);
+    }
+
     function resetParts() {
         parts.forEach(part => part.classList.remove('active', 'hit'));
     }
@@ -174,7 +182,7 @@
                 if (playerHp <= 0) {
                     combatStatus.textContent = 'Te derriba la bestia. Inténtalo otra vez.';
                     parts.forEach(part => part.style.pointerEvents = 'none');
-                    setTimeout(() => location.reload(), 1800);
+                    setTimeout(loseLife, 1800);
                 }
             }
         }, 650);
@@ -206,7 +214,7 @@
             if (playerHp <= 0) {
                 combatStatus.textContent = 'La caza termina contigo. Inténtalo de nuevo.';
                 parts.forEach(part => part.style.pointerEvents = 'none');
-                setTimeout(() => location.reload(), 1800);
+                setTimeout(loseLife, 1800);
             }
         }
     }

@@ -25,7 +25,10 @@
         <div class="forge-area">
             <div class="forge-fire"></div>
             <div class="forge-anvil">
-                <div class="nail" id="forgeNail"> </div>
+                <img class="anvil-image" src="~/Images/yunque.webp" alt="Yunque de la forja" />
+                <div class="nail" id="forgeNail">
+                    <img id="forgeWeaponImage" src="~/Images/Aguijon-Roto.png" alt="Aguijón roto sobre el yunque" />
+                </div>
             </div>
         </div>
 
@@ -65,10 +68,20 @@
             </div>
         </div>
     </div>
+
+    <div id="forgeSuccessOverlay" class="forge-success-overlay" role="dialog" aria-modal="true" aria-labelledby="forgeSuccessTitle" hidden>
+        <div class="forge-success-content">
+            <img src="~/Images/pureNail.webp" alt="Aguijón puro refinado" />
+            <h2 id="forgeSuccessTitle">¡Forja completada!</h2>
+            <p>Has refinado tu arma hasta su máximo esplendor.</p>
+            <button id="closeForgeSuccess" type="button">Continuar</button>
+        </div>
+    </div>
 </div>
 
 <script>
     const forgeNail = document.getElementById('forgeNail');
+    const forgeWeaponImage = document.getElementById('forgeWeaponImage');
     const strikeButton = document.getElementById('strikeButton');
     const timingIndicator = document.getElementById('timingIndicator');
     const hitZone = document.getElementById('hitZone');
@@ -77,6 +90,8 @@
     const forgeProgressFill = document.getElementById('forgeProgressFill');
     const forgeProgressText = document.getElementById('forgeProgressText');
     const forgeCompleteForm = document.getElementById('forgeCompleteForm');
+    const forgeSuccessOverlay = document.getElementById('forgeSuccessOverlay');
+    const closeForgeSuccess = document.getElementById('closeForgeSuccess');
 
     let successfulStrikes = 0;
     const requiredStrikes = 5;
@@ -90,6 +105,21 @@
     let hitZoneWidth = 30; // porcentaje (inicial 30%: 35%..65%)
     const minHitZoneWidth = 8; // ancho mínimo para seguir siendo jugable
     const hitZoneShrinkPerSuccess = 4; // cuanto se reduce en % por acierto
+    const weaponImages = [
+        '/Images/Aguijon-Roto.png',
+        '/Images/Nail.webp',
+        '/Images/channeledNail.webp',
+        '/Images/coiledNail.webp',
+        '/Images/coiledNail.webp',
+        '/Images/pureNail.webp'
+    ];
+
+    function updateWeaponImage() {
+        forgeWeaponImage.src = weaponImages[successfulStrikes];
+        forgeWeaponImage.alt = successfulStrikes === requiredStrikes
+            ? 'Aguijón puro refinado sobre el yunque'
+            : `Aguijón refinado: ${successfulStrikes}/${requiredStrikes} golpes`;
+    }
 
     // Iniciar el mini-juego
     function startForging(duration = currentDuration) {
@@ -166,6 +196,7 @@
             updateHitZone();
             forgeProgressFill.style.width = (successfulStrikes / requiredStrikes) * 100 + '%';
             forgeProgressText.textContent = `${successfulStrikes}/${requiredStrikes} golpes`;
+            updateWeaponImage();
             
             // Animación de golpe exitoso
             forgeNail.classList.add('hammered');
@@ -224,6 +255,7 @@
         
         // Efecto de finalización
         forgeNail.classList.add('perfected');
+        forgeSuccessOverlay.hidden = false;
     }
 
     strikeButton.addEventListener('click', () => {
@@ -251,6 +283,10 @@
                 checkHit();
             }
         }
+    });
+
+    closeForgeSuccess.addEventListener('click', () => {
+        forgeSuccessOverlay.hidden = true;
     });
 
     // Inicializar UI

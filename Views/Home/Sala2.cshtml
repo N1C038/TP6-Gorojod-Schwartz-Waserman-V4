@@ -165,6 +165,7 @@
         let nextAttackTimeout = null;
         let activePart = null;
         let combatPhase = 'normal';
+        let defeatReported = false;
         let finalClicks = 0;
         let lastFinalClick = 0;
         let normalAttackCount = 0;
@@ -185,11 +186,19 @@
         }
 
         function endPlayerRun(message) {
+            if (defeatReported) return;
+            defeatReported = true;
             combatStatus.textContent = message;
             parts.forEach(part => {
                 part.style.pointerEvents = 'none';
             });
-            setTimeout(() => defeatOverlay.style.display = 'flex', 1800);
+            setTimeout(() => {
+                fetch('@Url.Action("PerderVida", "Home")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: 'IdSala=2'
+                }).then(response => window.location.href = response.url);
+            }, 1800);
         }
 
         function handleMissedAttack(message) {

@@ -30,7 +30,7 @@ public class HomeController : Controller
         }
 
         Partida nPartida = new Partida()
-        { fechaInicio = DateTime.Today, horaInicio = DateTime.Now, IdSala = 1, estadoActual = "curso", nombreJugador = username };
+        { fechaInicio = DateTime.Today, horaInicio = DateTime.Now, IdSala = 1, estadoActual = "curso", nombreJugador = username.Trim(), Vidas = 3 };
         nPartida.Id = bd.crearPartida(nPartida);
         HttpContext.Session.SetString("PartidaId", nPartida.Id.ToString());
         return RedirectToAction("Sala", new { IdSala = 1 });
@@ -86,6 +86,9 @@ public class HomeController : Controller
         int partidaId = int.Parse(partidaIdSession);
         bool puedeEntrar = bd.TieneAcceso(partidaId, IdSala);
         if (!puedeEntrar) return RedirectToAction("AccesoDenegado");
+
+        Partida partida = bd.ObtenerPartidaPorId(partidaId);
+        ViewBag.Vidas = partida?.Vidas ?? 0;
 
         string viewName;
         object model = null;
@@ -152,20 +155,41 @@ public class HomeController : Controller
             }
         }
 
-        if (aciertos == 3)
+        string partidaIdSession = HttpContext.Session.GetString("PartidaId");
+        if (string.IsNullOrEmpty(partidaIdSession))
+            return RedirectToAction("Historia");
+
+        int partidaId = int.Parse(partidaIdSession);
+
+        if (aciertos >= 2)
         {
-            string partidaIdSession = HttpContext.Session.GetString("PartidaId");
-            if (!string.IsNullOrEmpty(partidaIdSession))
-            {
-                int partidaId = int.Parse(partidaIdSession);
-                bd.pasarSala(partidaId, 2);
-            }
+            bd.pasarSala(partidaId, 2);
 
             ViewBag.sala1Mensaje = "Has ganado la confianza de Oro, Sheo y Mato. El Aguijón roto te ha sido entregado.";
             return RedirectToAction("Sala", new { IdSala = 2 });
         }
 
-        ViewBag.sala1Mensaje = "No lograste ganar la confianza completa. Respondiste bien {aciertos} de 3 preguntas. Intenta otra vez.";
-        return RedirectToAction("Sala", new { IdSala = 1 });
+        int vidas = bd.PerderVida(partidaId);
+        return vidas == 0
+            ? RedirectToAction("Historia")
+            : RedirectToAction("Sala", new { IdSala = 1 });
+    }
+
+    [HttpPost]
+    public IActionResult PerderVida(int IdSala)
+    {
+        string partidaIdSession = HttpContext.Session.GetString("PartidaId");
+        if (string.IsNullOrEmpty(partidaIdSession))
+            return RedirectToAction("Historia");
+
+        int partidaId = int.Parse(partidaIdSession);
+        BD bd = new BD();
+        int vidas = bd.PerderVida(partidaId);
+
+        if (vidas == 0)
+            return RedirectToAction("Historia");
+
+        bd.pasarSala(partidaId, IdSala);
+        return RedirectToAction("Sala", new { IdSala });
     }
 }

@@ -169,10 +169,11 @@
 			if (player.hp <= 0) {
 				ended = true;
 				running = false;
-				overlay.style.display = 'flex';
-				overlay.querySelector('h3').textContent = 'Has caído';
-				overlay.querySelector('p').textContent = 'Radiance te derrotó. Presiona para intentar otra vez.';
-				startBtn.textContent = 'Reintentar';
+				fetch('@Url.Action("PerderVida", "Home")', {
+					method: 'POST',
+					headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+					body: 'IdSala=4'
+				}).then(response => window.location.href = response.url);
 			}
 		}
 
@@ -192,19 +193,43 @@
 				a.y + a.h > b.y;
 		}
 
+		function verticalSwordDrawRect(sword) {
+			const drawW = sword.w * 0.9;
+			const drawH = sword.h * 2.0;
+			return {
+				x: sword.x + (sword.w - drawW) / 2,
+				y: sword.y - (drawH - sword.h) * 0.98,
+				w: drawW,
+				h: drawH
+			};
+		}
+
+		function verticalSwordHitbox(sword) {
+			const drawRect = verticalSwordDrawRect(sword);
+			const hitboxW = drawRect.w * 0.55;
+			return {
+				x: drawRect.x + (drawRect.w - hitboxW) / 2,
+				y: drawRect.y + drawRect.h * 0.14,
+				w: hitboxW,
+				h: drawRect.h * 0.68
+			};
+		}
+
 		function spawnVerticalWave() {
-			const laneWidth = 100;
-			const lanes = Math.floor(arena.width / laneWidth);
-			const gapStart = Math.floor(Math.random() * Math.max(1, lanes - 1));
+			const laneWidth = 58;
+			const lanes = Math.ceil(arena.width / laneWidth);
+			const gapStart = Math.floor(Math.random() * lanes);
 			for (let i = 0; i < lanes; i++) {
 				if (i === gapStart) continue;
-				hazards.vertical.push({
-					x: i * laneWidth + laneWidth * 0.06,
+				const sword = {
+					x: i * laneWidth,
 					y: -50,
-					w: laneWidth * 0.88,
+					w: laneWidth * 0.95,
 					h: 60,
 					vy: 4.8
-				});
+				};
+				sword.hitbox = verticalSwordHitbox(sword);
+				hazards.vertical.push(sword);
 			}
 		}
 
@@ -219,7 +244,8 @@
 			for (let i = hazards.vertical.length - 1; i >= 0; i--) {
 				const sword = hazards.vertical[i];
 				sword.y += sword.vy;
-				if (rectIntersects(p, sword)) {
+				sword.hitbox.y += sword.vy;
+				if (rectIntersects(p, sword.hitbox)) {
 					hitPlayer(7, 'Las espadas del cielo te alcanzan.');
 				}
 				if (sword.y > arena.height + 60) {
@@ -561,11 +587,8 @@
 			ctx.fillStyle = 'rgba(235, 235, 255, 0.95)';
 			hazards.vertical.forEach((s) => {
 				if (verticalSwordImg.complete && verticalSwordImg.naturalWidth > 0) {
-					const drawW = s.w * 0.9;
-					const drawH = s.h * 2.0;
-					const drawX = s.x + (s.w - drawW) / 2;
-					const drawY = s.y - (drawH - s.h) * 0.98;
-					ctx.drawImage(verticalSwordImg, drawX, drawY, drawW, drawH);
+					const drawRect = verticalSwordDrawRect(s);
+					ctx.drawImage(verticalSwordImg, drawRect.x, drawRect.y, drawRect.w, drawRect.h);
 				} else {
 					ctx.fillRect(s.x, s.y, s.w, s.h);
 				}
