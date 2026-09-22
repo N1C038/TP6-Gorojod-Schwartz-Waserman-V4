@@ -30,10 +30,16 @@ public class BD {
         }
     }
 
-    public void perderPartida(int Vidas) {
+    public void resetPartida(int partidaId) {
         using (SqlConnection connection = new SqlConnection(connectionString)) {
-            string query = @"DELETE * FROM Partida WHERE Vidas = 0;";
+            string query = @"UPDATE Partida SET Vidas = 3, IdSala = 1 WHERE Id = @partidaId;";
+            connection.Execute(query, new { partidaId });
         }
+    }
+
+    public void perderPartida(int partidaId)
+    {
+        resetPartida(partidaId);
     }
     
     public bool TieneAcceso(int partidaId, int IdSala)

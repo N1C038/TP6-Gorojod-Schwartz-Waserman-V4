@@ -61,15 +61,17 @@
 		const player = {
 			x: arena.width * 0.5,
 			y: arena.floor,
-			w: 34,
-			h: 56,
+			w: 32,
+			h: 58,
 			vx: 0,
 			vy: 0,
 			speed: 9.5,
 			jump: -16,
 			onGround: true,
 			hp: 100,
-			iFrames: 0
+			iFrames: 0,
+			facing: 1,
+			animPhase: 0
 		};
 
 		const radiance = {
@@ -127,6 +129,7 @@
 		horizontalLeftImg3.src = '/Images/rEspHorIzq3.png';
 		const chaseBallImg = new Image();
 		chaseBallImg.src = '/Images/bolita.png';
+		ctx.imageSmoothingEnabled = false;
 
 		function clamp(value, min, max) {
 			return Math.max(min, Math.min(max, value));
@@ -140,6 +143,8 @@
 			player.onGround = true;
 			player.hp = 100;
 			player.iFrames = 0;
+			player.facing = 1;
+			player.animPhase = 0;
 			currentAttackIndex = 0;
 			attackTime = 0;
 			ended = false;
@@ -502,10 +507,14 @@
 			}
 		}
 
-		function updatePlayer() {
+		function updatePlayer(dt) {
+			const frameScale = dt / 16.67;
 			player.vx = 0;
 			if (keys.left) player.vx -= player.speed;
 			if (keys.right) player.vx += player.speed;
+			if (Math.abs(player.vx) > 0.1) {
+				player.facing = player.vx > 0 ? 1 : -1;
+			}
 
 			player.x += player.vx;
 			player.x = clamp(player.x, player.w / 2, arena.width - player.w / 2);
@@ -519,6 +528,14 @@
 				player.onGround = true;
 			} else {
 				player.onGround = false;
+			}
+
+			if (player.onGround && Math.abs(player.vx) > 0.1) {
+				player.animPhase += frameScale * (Math.abs(player.vx) / player.speed) * 0.9;
+			} else if (player.onGround) {
+				player.animPhase += frameScale * 0.12;
+			} else {
+				player.animPhase += frameScale * 0.2;
 			}
 
 			if (player.iFrames > 0) {
@@ -583,6 +600,115 @@
 			}
 		}
 
+		function drawKnightLimb(startX, startY, length, width, angle, color, footLength = 0) {
+			ctx.save();
+			ctx.translate(startX, startY);
+			ctx.rotate(angle);
+			ctx.fillStyle = color;
+			ctx.fillRect(-width / 2, 0, width, length);
+			if (footLength > 0) {
+				ctx.fillRect(-width / 2 - 2, length - 2, width + 4, footLength);
+			}
+			ctx.restore();
+		}
+
+		function drawKnightSprite() {
+			const blink = player.iFrames > 0 && Math.floor(player.iFrames / 3) % 2 === 0;
+			const moving = player.onGround && Math.abs(player.vx) > 0.5;
+			const phase = player.animPhase;
+			const bob = player.onGround
+				? (moving ? Math.sin(phase * 2.8) * 1.8 : Math.sin(phase * 1.2) * 0.8)
+				: Math.min(5, Math.max(-3, player.vy * 0.12));
+			const legSwing = player.onGround
+				? (moving ? Math.sin(phase * 3.1) * 0.8 : Math.sin(phase * 1.4) * 0.18)
+				: Math.max(-0.6, Math.min(0.6, player.vy * 0.03));
+			const armSwing = player.onGround
+				? (moving ? Math.sin(phase * 3.1 + Math.PI) * 0.55 : Math.sin(phase * 1.2) * 0.12)
+				: Math.max(-0.4, Math.min(0.4, player.vy * 0.02));
+			const cloakFlutter = player.onGround
+				? (moving ? Math.sin(phase * 2.6 + 0.45) * 0.45 : 0.12)
+				: Math.max(-0.2, Math.min(0.8, player.vy * 0.01 + 0.2));
+
+			const drawX = player.x;
+			const drawY = player.y - 29 + bob;
+
+			ctx.save();
+			ctx.translate(drawX, drawY);
+			ctx.scale(player.facing, 1);
+			ctx.globalAlpha = blink ? 0.42 : 1;
+
+			ctx.fillStyle = 'rgba(0, 0, 0, 0.28)';
+			ctx.beginPath();
+			ctx.ellipse(0, 35, 15, 5, 0, 0, Math.PI * 2);
+			ctx.fill();
+
+			ctx.fillStyle = '#08080f';
+			ctx.beginPath();
+			ctx.moveTo(-10, 2);
+			ctx.quadraticCurveTo(-17, 14, -14, 28);
+			ctx.quadraticCurveTo(-11, 41, 0, 42);
+			ctx.quadraticCurveTo(11, 41, 14, 28);
+			ctx.quadraticCurveTo(16, 15, 10, 2);
+			ctx.closePath();
+			ctx.fill();
+
+			ctx.fillStyle = '#171722';
+			ctx.beginPath();
+			ctx.ellipse(0, 18, 11, 16, 0, 0, Math.PI * 2);
+			ctx.fill();
+
+			ctx.fillStyle = '#f4efe6';
+			ctx.beginPath();
+			ctx.moveTo(-9, -7);
+			ctx.quadraticCurveTo(-9, -18, 0, -20);
+			ctx.quadraticCurveTo(9, -18, 9, -7);
+			ctx.quadraticCurveTo(10, 6, 0, 9);
+			ctx.quadraticCurveTo(-10, 6, -9, -7);
+			ctx.fill();
+
+			ctx.fillStyle = '#0c0c12';
+			ctx.beginPath();
+			ctx.ellipse(0, -1, 4.2, 5.8, 0, 0, Math.PI * 2);
+			ctx.fill();
+
+			ctx.strokeStyle = '#f4efe6';
+			ctx.lineWidth = 2.5;
+			ctx.lineCap = 'round';
+			ctx.beginPath();
+			ctx.moveTo(-4, -12);
+			ctx.lineTo(-10, -22);
+			ctx.lineTo(-6, -25);
+			ctx.moveTo(4, -12);
+			ctx.lineTo(10, -22);
+			ctx.lineTo(6, -25);
+			ctx.stroke();
+
+			ctx.fillStyle = '#0f0f17';
+			ctx.beginPath();
+			ctx.moveTo(-12, 8);
+			ctx.quadraticCurveTo(-18, 18, -15, 31 + cloakFlutter * 2);
+			ctx.quadraticCurveTo(-8, 39, -2, 39);
+			ctx.quadraticCurveTo(-9, 25, -7, 15);
+			ctx.closePath();
+			ctx.fill();
+
+			drawKnightLimb(-5, 28, 14, 3.5, legSwing * 0.5 + 0.18, '#12121a', 5);
+			drawKnightLimb(5, 28, 15, 3.5, -legSwing * 0.5 - 0.12, '#12121a', 5);
+			drawKnightLimb(-9, 13, 11, 3, -0.55 - armSwing, '#0d0d14', 2);
+			drawKnightLimb(10, 15, 13, 2.5, 0.7 + armSwing, '#0d0d14', 2);
+
+			ctx.strokeStyle = '#d8d0bf';
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo(13, 15);
+			ctx.lineTo(25 + moving * 2, 12 + Math.sin(phase * 2.4) * 1.5);
+			ctx.stroke();
+			ctx.fillStyle = '#b3c7d9';
+			ctx.fillRect(25 + moving * 2, 10 + Math.sin(phase * 2.4) * 1.5, 7, 3);
+
+			ctx.restore();
+		}
+
 		function drawHazards() {
 			ctx.fillStyle = 'rgba(235, 235, 255, 0.95)';
 			hazards.vertical.forEach((s) => {
@@ -638,14 +764,7 @@
 		}
 
 		function drawPlayer() {
-			const px = player.x - player.w / 2;
-			const py = player.y - player.h;
-			const blink = player.iFrames > 0 && Math.floor(player.iFrames / 3) % 2 === 0;
-			ctx.fillStyle = blink ? 'rgba(255,255,255,0.35)' : 'rgba(170, 220, 255, 0.98)';
-			ctx.fillRect(px, py, player.w, player.h);
-			ctx.fillStyle = 'rgba(30,45,80,0.95)';
-			ctx.fillRect(px + 7, py + 10, 8, 8);
-			ctx.fillRect(px + player.w - 15, py + 10, 8, 8);
+			drawKnightSprite();
 		}
 
 		function updateAttack(dt) {
@@ -666,7 +785,7 @@
 
 			if (running && !ended) {
 				attackTime += dt;
-				updatePlayer();
+				updatePlayer(dt);
 				updateAttack(dt);
 				advanceAttackIfNeeded();
 			}

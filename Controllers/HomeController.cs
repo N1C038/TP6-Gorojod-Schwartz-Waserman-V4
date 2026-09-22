@@ -16,31 +16,29 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult iniciarPartida(string username)
     {
-        Partida partida = new Partida();
         BD bd = new BD();
-        if (!string.IsNullOrWhiteSpace(username))
+        string nombreJugador = username?.Trim();
+
+        if (string.IsNullOrWhiteSpace(nombreJugador))
+            return RedirectToAction("Historia");
+
+        Partida partida = bd.ObtenerPartidaPorNombre(nombreJugador);
+        if (partida != null)
         {
-            
-            partida = bd.ObtenerPartidaPorNombre(username.Trim());
-            if (partida != null)
-            {
-                HttpContext.Session.SetString("PartidaId", partida.Id.ToString());
-                return RedirectToAction("Sala", new { IdSala = partida.IdSala });
-            }
-            if (partida.getVidas() == 0) {
-                bd.perderPartida(partida.getVidas());
-            }
+            HttpContext.Session.SetString("PartidaId", partida.Id.ToString());
+            return RedirectToAction("Sala", new { IdSala = partida.IdSala });
         }
 
         Partida nPartida = new Partida()
-        { fechaInicio = DateTime.Today, horaInicio = DateTime.Now, IdSala = 1, estadoActual = "curso", nombreJugador = username.Trim(), Vidas = 3 };
+        { fechaInicio = DateTime.Today, horaInicio = DateTime.Now, IdSala = 1, estadoActual = "curso", nombreJugador = nombreJugador, Vidas = 3 };
         nPartida.Id = bd.crearPartida(nPartida);
         HttpContext.Session.SetString("PartidaId", nPartida.Id.ToString());
         return RedirectToAction("Sala", new { IdSala = 1 });
     }
 
-    public IActionResult Historia()
-    {   
+    public IActionResult Historia(string mensaje)
+    {
+        ViewBag.mensaje = string.IsNullOrWhiteSpace(mensaje) ? null : mensaje;
         return View();
     }
     public IActionResult Index()
@@ -64,21 +62,6 @@ public class HomeController : Controller
         bd.pasarSala(partidaId, nIdSala);
         return RedirectToAction("Sala", new { IdSala = nIdSala });
     }
-
-    /*public IActionResult irAForja()
-    {
-        string partidaIdSession = HttpContext.Session.GetString("PartidaId");
-        if (string.IsNullOrEmpty(partidaIdSession))
-            return RedirectToAction("Historia");
-
-        int partidaId = int.Parse(partidaIdSession);
-        BD bd = new BD();
-        // Actualizar la partida a Sala 3
-        bd.pasarSala(partidaId, 3);
-        
-        HttpContext.Session.SetString("EnForja", "true");
-        return RedirectToAction("Sala", new { IdSala = 3 });
-    }*/    //fue una respuesta para debuggear mas rapido
 
     public IActionResult Sala(int IdSala)
     {
@@ -173,9 +156,13 @@ public class HomeController : Controller
         }
 
         int vidas = bd.PerderVida(partidaId);
-        return vidas == 0
-            ? RedirectToAction("Historia")
-            : RedirectToAction("Sala", new { IdSala = 1 });
+        if (vidas == 0)
+        {
+            bd.resetPartida(partidaId);
+            return RedirectToAction("Historia");
+        }
+
+        return RedirectToAction("Sala", new { IdSala = 1 });
     }
 
     [HttpPost]
@@ -190,7 +177,10 @@ public class HomeController : Controller
         int vidas = bd.PerderVida(partidaId);
 
         if (vidas == 0)
+        {
+            bd.resetPartida(partidaId);
             return RedirectToAction("Historia");
+        }
 
         bd.pasarSala(partidaId, IdSala);
         return RedirectToAction("Sala", new { IdSala });
