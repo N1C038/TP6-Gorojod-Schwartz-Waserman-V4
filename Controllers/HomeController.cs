@@ -147,19 +147,20 @@ public class HomeController : Controller
 
         int partidaId = int.Parse(partidaIdSession);
 
-        if (aciertos >= 2)
-        {
-            bd.pasarSala(partidaId, 2);
-
-            ViewBag.sala1Mensaje = "Has ganado la confianza de Oro, Sheo y Mato. El Aguijón roto te ha sido entregado.";
-            return RedirectToAction("Sala", new { IdSala = 2 });
-        }
-
+        // Siempre pierden una vida
         int vidas = bd.PerderVida(partidaId);
+        
         if (vidas == 0)
         {
             bd.resetPartida(partidaId);
             return RedirectToAction("Historia");
+        }
+
+        if (aciertos >= 2)
+        {
+            bd.pasarSala(partidaId, 2);
+            ViewBag.sala1Mensaje = "Has ganado la confianza de Oro, Sheo y Mato. El Aguijón roto te ha sido entregado.";
+            return RedirectToAction("Sala", new { IdSala = 2 });
         }
 
         return RedirectToAction("Sala", new { IdSala = 1 });

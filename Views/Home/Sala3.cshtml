@@ -101,6 +101,7 @@
     let gameStarted = false;
     let currentDuration = 2500; // Duración que aumenta con cada golpe exitoso
     const initialDuration = 2500; // Duración inicial
+    let totalMisses = 0; // Contador total de fallos
     // Hit zone variables (porcentaje del ancho de la barra)
     let hitZoneWidth = 30; // porcentaje (inicial 30%: 35%..65%)
     const minHitZoneWidth = 8; // ancho mínimo para seguir siendo jugable
@@ -223,11 +224,29 @@
                 }, 1500);
             }
         } else {
-            // En caso de fallo, resetear la velocidad pero mantener los golpes
-            currentDuration = initialDuration;
-            forgeStatus.textContent = '¡Fallaste! El golpe no fue lo suficientemente fuerte.';
-            timingMessage.textContent = '✗ Timing incorrecto - Intenta de nuevo';
-            timingMessage.classList.add('error');
+            
+            // Mostrar advertencia por fallo
+            if (totalMisses === 2) {
+                forgeStatus.textContent = '⚠️ ¡ADVERTENCIA! Si fallas uno más, perderás un sello.';
+            } else if (totalMisses === 3) {
+                forgeStatus.textContent = '💀 ¡Has perdido un sello por tus fallos!';
+                setTimeout(() => timingMessage.classList.remove('error'), 1000);
+                
+                // Animación de fallo crítico
+                forgeNail.classList.add('failed');
+                setTimeout(() => forgeNail.classList.remove('failed'), 300);
+                
+                // Perder una vida después de 2 segundos
+                setTimeout(() => {
+                    fetch('@Url.Action("PerderVida", "Home")', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body: 'IdSala=3'
+                    }).then(response => window.location.href = response.url);
+                }, 2000);
+                return;
+            }
+            
             setTimeout(() => timingMessage.classList.remove('error'), 1000);
             
             // Animación de fallo

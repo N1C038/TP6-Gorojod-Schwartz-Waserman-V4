@@ -18,9 +18,9 @@
 			<div class="sala4-bar">
 				<div id="playerHpFill" class="sala4-fill"></div>
 			</div>
-		</div>
+			</div>
 		<div id="sala4Wave" class="sala4-wave">Ataque 1/4</div>
-	</div>
+		</div>
 
 	<div class="sala4-controls">Mover: A/D o flechas &nbsp;|&nbsp; Saltar: Espacio o W/↑</div>
 
@@ -71,7 +71,9 @@
 			hp: 100,
 			iFrames: 0,
 			facing: 1,
-			animPhase: 0
+			animPhase: 0,
+			jumpAnimPhase: 0,
+			landTimer: 0
 		};
 
 		const radiance = {
@@ -117,6 +119,16 @@
 		bgImg.src = '/Images/radianceBack.jfif';
 		const bossImg = new Image();
 		bossImg.src = '/Images/THERADIANCE.webp';
+		const knightWalkSpriteImgs = [1, 2, 3, 4, 5].map((index) => {
+			const img = new Image();
+			img.src = `/Images/spritesheetC${index}.png`;
+			return img;
+		});
+		const knightJumpSpriteImgs = [1, 2, 3, 4, 5].map((index) => {
+			const img = new Image();
+			img.src = `/Images/spritesheetS${index}.png`;
+			return img;
+		});
 		const verticalSwordImg = new Image();
 		verticalSwordImg.src = '/Images/rEspVertical.png';
 		const horizontalRightImg2 = new Image();
@@ -145,6 +157,8 @@
 			player.iFrames = 0;
 			player.facing = 1;
 			player.animPhase = 0;
+			player.jumpAnimPhase = 0;
+			player.landTimer = 0;
 			currentAttackIndex = 0;
 			attackTime = 0;
 			ended = false;
@@ -509,6 +523,7 @@
 
 		function updatePlayer(dt) {
 			const frameScale = dt / 16.67;
+			const wasOnGround = player.onGround;
 			player.vx = 0;
 			if (keys.left) player.vx -= player.speed;
 			if (keys.right) player.vx += player.speed;
@@ -530,12 +545,27 @@
 				player.onGround = false;
 			}
 
+			if (!wasOnGround && player.onGround) {
+				player.landTimer = 120;
+			}
+
 			if (player.onGround && Math.abs(player.vx) > 0.1) {
 				player.animPhase += frameScale * (Math.abs(player.vx) / player.speed) * 0.9;
 			} else if (player.onGround) {
 				player.animPhase += frameScale * 0.12;
 			} else {
 				player.animPhase += frameScale * 0.2;
+				player.jumpAnimPhase += frameScale * 0.85;
+			}
+
+			if (player.onGround) {
+				player.jumpAnimPhase = 0;
+			} else {
+				player.landTimer = 0;
+			}
+
+			if (player.landTimer > 0) {
+				player.landTimer = Math.max(0, player.landTimer - dt);
 			}
 
 			if (player.iFrames > 0) {
@@ -600,19 +630,18 @@
 			}
 		}
 
-		function drawKnightLimb(startX, startY, length, width, angle, color, footLength = 0) {
-			ctx.save();
-			ctx.translate(startX, startY);
-			ctx.rotate(angle);
-			ctx.fillStyle = color;
-			ctx.fillRect(-width / 2, 0, width, length);
-			if (footLength > 0) {
-				ctx.fillRect(-width / 2 - 2, length - 2, width + 4, footLength);
-			}
-			ctx.restore();
+		function getKnightWalkFrameIndex() {
+			if (Math.abs(player.vx) <= 0.5) return 0;
+			const walkCycle = [0, 1, 2, 3, 4, 3, 2, 1];
+			return walkCycle[Math.floor(player.animPhase * 0.75) % walkCycle.length];
 		}
 
-		function drawKnightSprite() {
+		function getKnightJumpFrameIndex() {
+			const airbornePhase = clamp(player.jumpAnimPhase, 0, 0.999);
+			return Math.min(4, Math.floor(airbornePhase * 5));
+		}
+
+		function drawKnightFallbackSprite() {
 			const blink = player.iFrames > 0 && Math.floor(player.iFrames / 3) % 2 === 0;
 			const moving = player.onGround && Math.abs(player.vx) > 0.5;
 			const phase = player.animPhase;
@@ -709,6 +738,40 @@
 			ctx.restore();
 		}
 
+		function drawKnightLimb(startX, startY, length, width, angle, color, footLength = 0) {
+			ctx.save();
+			ctx.translate(startX, startY);
+			ctx.rotate(angle);
+			ctx.fillStyle = color;
+			ctx.fillRect(-width / 2, 0, width, length);
+			if (footLength > 0) {
+				ctx.fillRect(-width / 2 - 2, length - 2, width + 4, footLength);
+			}
+			ctx.restore();
+		}
+
+		function drawKnightSprite() {
+			const useJumpSprite = !player.onGround || player.landTimer > 0;
+			const sprite = useJumpSprite
+				? knightJumpSpriteImgs[getKnightJumpFrameIndex()] || knightJumpSpriteImgs[0]
+				: knightWalkSpriteImgs[getKnightWalkFrameIndex()] || knightWalkSpriteImgs[0];
+
+			if (sprite.complete && sprite.naturalWidth > 0) {
+				const blink = player.iFrames > 0 && Math.floor(player.iFrames / 3) % 2 === 0;
+				const drawW = 54;
+				const drawH = 68;
+
+				ctx.save();
+				ctx.translate(player.x, player.y + 2);
+				ctx.scale(player.facing, 1);
+				ctx.globalAlpha = blink ? 0.42 : 1;
+				ctx.drawImage(sprite, -drawW / 2, -drawH + 4, drawW, drawH);
+				ctx.restore();
+			} else {
+				drawKnightFallbackSprite();
+			}
+		}
+
 		function drawHazards() {
 			ctx.fillStyle = 'rgba(235, 235, 255, 0.95)';
 			hazards.vertical.forEach((s) => {
@@ -800,6 +863,8 @@
 			if (player.onGround && running && !ended) {
 				player.vy = player.jump;
 				player.onGround = false;
+				player.jumpAnimPhase = 0;
+				player.landTimer = 0;
 			}
 		}
 
